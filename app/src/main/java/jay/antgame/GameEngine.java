@@ -40,6 +40,7 @@ public class GameEngine implements Runnable {
          * do engine stuff that needs to be done while game is running
          */
 
+
         // push changes to gameView
         handler.post(new Runnable() {
             @Override

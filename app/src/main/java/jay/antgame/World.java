@@ -1,6 +1,5 @@
 package jay.antgame;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,21 +19,27 @@ public class World {
         this.nest = nest;
     }
 
+    /*
+     * to do:
+     * -----
+     *
+     * Constructor with DataManagerObject as parameter
+     * -> fills the World object with the data from the Database using the DataManagers
+     * getAntPositions(), etc. Methods
+     *
+     */
 
     public List<Ant> getAnts() {
         return ants;
     }
 
-
     public List<FoodSource> getFoodSources() {
         return foodSources;
     }
 
-
     public List<ScentTrail> getScentTrails() {
         return scentTrails;
     }
-
 
     public Nest getNest() {
         return nest;

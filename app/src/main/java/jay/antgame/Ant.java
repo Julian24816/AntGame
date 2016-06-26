@@ -15,15 +15,15 @@ public class Ant implements WorldObject {
 
     @Override
     public Position getPosition() {
-        return Position.getX() , Position.getY();
+        return null;
     }
-
+//g
     public int getFood() {
         return antFood;
     }
 
     public void setFood(int f) {
-        antfood = f
+        antFood = f;
     }
 
     public void foodDelivery() {

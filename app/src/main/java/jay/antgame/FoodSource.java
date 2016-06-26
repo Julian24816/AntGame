@@ -5,10 +5,18 @@ package jay.antgame;
  */
 public class FoodSource implements WorldObject {
 
+    private int sourceFood;
+
+    public FoodSource (int f) {
+        sourceFood = f;
+    }
+
     //TODO implement methods
 
     @Override
     public Position getPosition() {
         return null;
     }
+
+    public void lowerFood(int f) {sourceFood=sourceFood - f;}
 }

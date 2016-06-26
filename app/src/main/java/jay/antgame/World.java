@@ -47,8 +47,12 @@ public class World {
         return nest;
     }
 
-    public int getFood(){ return food; }
+    public int getFood() {
+        return food;
+    }
 
-    public void addFood(int f){}
+    public void addFood(int f) {
+        food = food + f;
+    }
 
 }

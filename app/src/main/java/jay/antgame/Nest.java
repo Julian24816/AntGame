@@ -12,4 +12,8 @@ public class Nest implements WorldObject {
         return null;
     }
 
+    public void addFoodAmount(int f){
+        World.addFood(f);
+    }
+
 }

@@ -49,4 +49,6 @@ public class World {
 
     public int getFood(){ return food; }
 
+    public void addFood(int f){}
+
 }

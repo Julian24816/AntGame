@@ -17,7 +17,7 @@ public class Ant implements WorldObject {
     public Position getPosition() {
         return null;
     }
-//g
+
     public int getFood() {
         return antFood;
     }

@@ -5,6 +5,7 @@ package jay.antgame;
  */
 public class ScentTrail implements WorldObject {
 
+    private int lifetime;
     //TODO implement methods
 
 
@@ -12,4 +13,8 @@ public class ScentTrail implements WorldObject {
     public Position getPosition() {
         return null;
     }
+
+    public int getRemainingLifetime(){return lifetime;}
+
+    public Position getTarget(){return null;}
 }

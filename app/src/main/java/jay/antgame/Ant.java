@@ -15,7 +15,7 @@ public class Ant implements WorldObject {
 
     @Override
     public Position getPosition() {
-        return null;
+        return Position.getX() , Position.getY();
     }
 
     public int getFood() {

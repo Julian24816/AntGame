@@ -19,4 +19,6 @@ public class FoodSource implements WorldObject {
     }
 
     public void lowerFood(int f) {sourceFood=sourceFood - f;}
+
+    public int getFood() {return sourceFood;}
 }

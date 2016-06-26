@@ -11,12 +11,14 @@ public class World {
     private List<FoodSource> foodSources;
     private List<ScentTrail> scentTrails;
     private Nest nest;
+    private int food;
 
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
         foodSources = sources;
         scentTrails = trails;
         this.nest = nest;
+        food = 0;
     }
 
     /*
@@ -44,5 +46,7 @@ public class World {
     public Nest getNest() {
         return nest;
     }
+
+    public int getFood(){ return food; }
 
 }

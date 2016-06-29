@@ -6,6 +6,7 @@ package jay.antgame.data;
 public class Nest implements WorldObject {
 
     private Position pos;
+    private int food;
     //TODO implement methods
 
     @Override
@@ -19,7 +20,7 @@ public class Nest implements WorldObject {
     }
 
     public void addFoodAmount(int f){
-        World.addFood(f);
+        food = f;
     }
 
 }

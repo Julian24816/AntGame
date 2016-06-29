@@ -1,4 +1,4 @@
-package jay.antgame;
+package jay.antgame.data;
 
 /**
  * Created by Julian on 24.06.2016.

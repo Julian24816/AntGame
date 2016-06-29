@@ -1,4 +1,4 @@
-package jay.antgame;
+package jay.antgame.data;
 
 import java.util.List;
 

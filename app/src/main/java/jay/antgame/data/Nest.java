@@ -5,11 +5,17 @@ package jay.antgame.data;
  */
 public class Nest implements WorldObject {
 
+    private Position pos;
     //TODO implement methods
 
     @Override
     public Position getPosition() {
-        return null;
+        return pos;
+    }
+
+    @Override
+    public void setPosition(Position pos) {
+        this.pos = pos;
     }
 
     public void addFoodAmount(int f){

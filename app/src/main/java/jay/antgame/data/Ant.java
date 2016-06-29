@@ -8,6 +8,7 @@ public class Ant implements WorldObject {
     //TODO implement Methods
     private int antFood;
     private int maxFood;
+    private Position pos;
 
     public Ant(int max) {
         maxFood = max;
@@ -15,7 +16,12 @@ public class Ant implements WorldObject {
 
     @Override
     public Position getPosition() {
-        return null;
+        return pos;
+    }
+
+    @Override
+    public void setPosition(Position pos) {
+        this.pos = pos;
     }
 
     public int getFood() {

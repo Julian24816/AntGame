@@ -6,15 +6,21 @@ package jay.antgame.data;
 public class ScentTrail implements WorldObject {
 
     private int lifetime;
+    private Position pos;
+    private Position target;
     //TODO implement methods
 
 
     @Override
     public Position getPosition() {
-        return null;
+        return pos;
     }
 
-    public int getRemainingLifetime(){return lifetime;}
+    @Override
+    public void setPosition(Position pos) {
+        this.pos = pos;
+    }
 
-    public Position getTarget(){return null;}
+    public Position getTarget(){ return target; }
+    public int getRemainingLifetime(){return lifetime; }
 }

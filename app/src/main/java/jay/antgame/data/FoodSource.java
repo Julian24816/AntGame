@@ -6,6 +6,7 @@ package jay.antgame.data;
 public class FoodSource implements WorldObject {
 
     private int sourceFood;
+    private Position pos;
 
     public FoodSource (int f) {
         sourceFood = f;
@@ -15,7 +16,12 @@ public class FoodSource implements WorldObject {
 
     @Override
     public Position getPosition() {
-        return null;
+        return pos;
+    }
+
+    @Override
+    public void setPosition(Position pos) {
+        this.pos = pos;
     }
 
     public void lowerFood(int f) {sourceFood=sourceFood - f;}

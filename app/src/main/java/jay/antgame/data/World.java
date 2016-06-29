@@ -55,4 +55,6 @@ public class World {
         food = food + f;
     }
 
+    public void addAnt(Ant ant){ ants.add(ant); }
+
 }

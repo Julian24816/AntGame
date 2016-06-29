@@ -8,19 +8,29 @@ public class ScentTrail implements WorldObject {
     private int lifetime;
     private Position pos;
     private Position target;
-    //TODO implement methods
 
+    public ScentTrail(Position pos, Position target, int lifeTime) {
+        this.lifetime = lifeTime;
+        this.pos = pos;
+        this.target = target;
+    }
 
     @Override
     public Position getPosition() {
         return pos;
     }
 
-    @Override
+    @Override @Deprecated
     public void setPosition(Position pos) {
-        this.pos = pos;
+        //this.pos = pos;
+        throw new RuntimeException("currently changing the Nests Position isn't allowed");
     }
 
-    public Position getTarget(){ return target; }
-    public int getRemainingLifetime(){return lifetime; }
+    public Position getTarget(){
+        return target;
+    }
+
+    public int getRemainingLifetime(){
+        return lifetime;
+    }
 }

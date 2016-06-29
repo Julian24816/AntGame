@@ -8,8 +8,9 @@ public class FoodSource implements WorldObject {
     private int sourceFood;
     private Position pos;
 
-    public FoodSource (int f) {
-        sourceFood = f;
+    public FoodSource (Position pos, int startFood) {
+        this.pos = pos;
+        sourceFood = startFood;
     }
 
     //TODO implement methods
@@ -19,9 +20,10 @@ public class FoodSource implements WorldObject {
         return pos;
     }
 
-    @Override
+    @Override @Deprecated
     public void setPosition(Position pos) {
-        this.pos = pos;
+        //this.pos = pos;
+        throw new RuntimeException("currently changing the Nests Position isn't allowed");
     }
 
     public void lowerFood(int f) {sourceFood=sourceFood - f;}

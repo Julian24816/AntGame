@@ -15,6 +15,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import jay.antgame.data.World;
+
 /**
  * Created by Julian on 09.06.2016.
  */
@@ -24,6 +26,7 @@ public class MainActivity extends Activity
     private ViewGroup container;
     private GameView gameView;
     private GameEngine gameEngine;
+    private GameStorage gameStorage;
 
 
     @Override
@@ -38,6 +41,8 @@ public class MainActivity extends Activity
         title.setOnClickListener(this);
 
         container = (ViewGroup) findViewById(R.id.container);
+
+        gameStorage = new GameStorage(this);
     }
 
 
@@ -48,7 +53,6 @@ public class MainActivity extends Activity
             a.setAnimationListener(new Animation.AnimationListener() {
                 @Override public void onAnimationStart(Animation animation) {}
                 @Override public void onAnimationRepeat(Animation animation) {}
-
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     startGame();
@@ -70,17 +74,20 @@ public class MainActivity extends Activity
 
         findViewById(R.id.title).setVisibility(View.GONE);
 
-        gameView = new GameView(this);
+        // load World from database
+        World world = gameStorage.getNewWorld();
 
+        // create new GameView and show the World
+        gameView = new GameView(this, world);
         container.addView(gameView,
                 new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
-        gameEngine = new GameEngine(gameView);
-        /*
-         * setup gameEngine
-         */
+        // create GameEngine and start
+        gameEngine = new GameEngine(gameView, world);
         gameEngine.start();
     }
+
+
 }

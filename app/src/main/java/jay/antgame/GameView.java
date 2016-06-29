@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import jay.antgame.data.World;
+
 /**
  * Created by Julian on 09.06.2016.
  */
@@ -33,10 +35,16 @@ public class GameView extends SurfaceView
         }
     };
 
-    public GameView(Context context) {
-        super(context);
+    private World gameWorld;
 
+    public GameView(Context context, World gameWorld) {
+        super(context);
+        this.gameWorld = gameWorld;
         getHolder().addCallback(this);
+    }
+
+    public void setGameWorld(World newWorld) {
+        gameWorld = newWorld;
     }
 
     @Override

@@ -5,6 +5,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jay.antgame.data.Ant;
+import jay.antgame.data.FoodSource;
+import jay.antgame.data.Nest;
+import jay.antgame.data.Position;
+import jay.antgame.data.ScentTrail;
+import jay.antgame.data.Worker;
+import jay.antgame.data.World;
+
 /**
  * Created by Julian on 29.06.2016.
  */
@@ -36,20 +47,20 @@ public class GameStorage extends SQLiteOpenHelper {
             + FOOD_AMOUNT + " integer, " + SAVE_ID + " integer)";
 
 
-    // constants for table FOODSOURCES
-    private static final String TABLE_FOODSOURCES = "foodSources";
-    private static final String FOODSOOURCE_MAX_FOOD_AMOUNT = "maxFoodAmount";
+    // constants for table FOOD_SOURCES
+    private static final String TABLE_FOOD_SOURCES = "foodSources";
+    private static final String FOOD_SOURCE_MAX_FOOD_AMOUNT = "maxFoodAmount";
     private static final String CREATE_TABLE_FOODSOURCES
-            = "create table " + TABLE_FOODSOURCES + " (" + POS_X + " real, " + POS_Y + " real, "
-            + FOOD_AMOUNT + " integer, " + FOODSOOURCE_MAX_FOOD_AMOUNT + " integer, "
+            = "create table " + TABLE_FOOD_SOURCES + " (" + POS_X + " real, " + POS_Y + " real, "
+            + FOOD_AMOUNT + " integer, " + FOOD_SOURCE_MAX_FOOD_AMOUNT + " integer, "
             + SAVE_ID + " integer)";
 
-    // constants for table SCENTTRAILS
-    private static final String TABLE_SCENTTRAILS = "scentTrails";
-    private static final String SCENTTRAIL_REMAINING_LIFE_TIME = "liveTime";
+    // constants for table SCENT_TRAILS
+    private static final String TABLE_SCENT_TRAILS = "scentTrails";
+    private static final String SCENT_TRAIL_REMAINING_LIFE_TIME = "liveTime";
     private static final String CREATE_TABLE_SCENTTRAILS
-            = "create table " + TABLE_SCENTTRAILS + " (" + POS_X + " real, " + POS_Y + " real, "
-            + SCENTTRAIL_REMAINING_LIFE_TIME + " integer, " + SAVE_ID + " integer)";
+            = "create table " + TABLE_SCENT_TRAILS + " (" + POS_X + " real, " + POS_Y + " real, "
+            + SCENT_TRAIL_REMAINING_LIFE_TIME + " integer, " + SAVE_ID + " integer)";
 
 
 
@@ -75,4 +86,21 @@ public class GameStorage extends SQLiteOpenHelper {
     }
 
 
+    public World getNewWorld() {
+        Nest nest = new Nest(new Position(0,0));
+
+        List<Ant> ants = new ArrayList<>();
+        for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));
+
+        List<FoodSource> sources = new ArrayList<>();
+        sources.add(new FoodSource(new Position(20,10), 50));
+        sources.add(new FoodSource(new Position(-10,10), 50));
+        sources.add(new FoodSource(new Position(-20,-10), 50));
+        sources.add(new FoodSource(new Position(10,-10), 50));
+
+
+        List<ScentTrail> trails = new ArrayList<>();
+
+        return new World(ants, sources, trails, nest);
+    }
 }

@@ -18,9 +18,21 @@ import jay.antgame.data.World;
 public class GameEngine implements Runnable {
 
     private static final long MS_PER_FRAME = 50;
-    private GameView gameView;
     private ScheduledExecutorService executorService;
+/* currently unused
     private Handler handler = new Handler();
+    private run()
+        // push changes to gameView
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                // call the gameViews update methods
+            }
+        });
+ */
+
+    private GameView gameView;
+    private World world;
 
     private final int expWorkerCostsImcrecment = 2;
     private final int expWorkerLevelCostIncrecment = 3;
@@ -28,9 +40,8 @@ public class GameEngine implements Runnable {
     private int workerUpgradeCost = 10;
     private int workerCost = 1;
 
-    private World world = null;
-
-    public GameEngine(GameView gameView) {
+    public GameEngine(GameView gameView, World world) {
+        this.world = world;
         this.gameView = gameView;
     }
 
@@ -49,22 +60,7 @@ public class GameEngine implements Runnable {
     @Override
     public void run() {
 
-        if(world == null)
-            return;
-
         tickAnts();
-
-
-
-        // push changes to gameView
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                /*
-                 * call the gameViews update methods
-                 */
-            }
-        });
 
         // check for gameOver?
         // stop()
@@ -102,7 +98,4 @@ public class GameEngine implements Runnable {
         }
     }
 
-    public void setWorld(World world){
-        this.world = world;
-    }
 }

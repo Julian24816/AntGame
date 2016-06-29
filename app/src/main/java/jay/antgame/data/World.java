@@ -13,6 +13,11 @@ public class World {
     private Nest nest;
     private int food;
 
+    private int workerLevel = 1;
+
+    private int workerLevelCost = 10;
+    private final int workerExpLevelCostIncrecment = 3;
+
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
         foodSources = sources;
@@ -56,5 +61,9 @@ public class World {
     }
 
     public void addAnt(Ant ant){ ants.add(ant); }
+
+    public int getWorkerLevel(){ return workerLevel; }
+
+    public void increaseWorkerLevel(){ workerLevel+= 1; }
 
 }

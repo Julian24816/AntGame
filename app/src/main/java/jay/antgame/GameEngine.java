@@ -23,7 +23,9 @@ public class GameEngine implements Runnable {
     private Handler handler = new Handler();
 
     private final int expWorkerCostsImcrecment = 2;
+    private final int expWorkerLevelCostIncrecment = 3;
 
+    private int workerUpgradeCost = 10;
     private int workerCost = 1;
 
     private World world = null;
@@ -70,7 +72,7 @@ public class GameEngine implements Runnable {
 
     public boolean buyWorker(){
         if(world.getFood()>=workerCost){
-            world.addAnt(new Worker());
+            world.addAnt(new Worker(world.getNest().getPosition()));
             world.addFood(-workerCost);
             workerCost *= expWorkerCostsImcrecment;
             return true;
@@ -79,7 +81,20 @@ public class GameEngine implements Runnable {
         }
     }
 
+    public boolean upgradeWorker(){
+        if(world.getFood()>=workerUpgradeCost){
+            world.increaseWorkerLevel();
+            world.addFood(-workerUpgradeCost);
+            workerUpgradeCost *= expWorkerLevelCostIncrecment;
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+    public int getWorkerCost(){
+        return workerCost;
+    }
 
     private void tickAnts(){
         for(Ant ant: world.getAnts()){

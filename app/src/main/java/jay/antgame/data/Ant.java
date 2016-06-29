@@ -3,12 +3,12 @@ package jay.antgame.data;
 /**
  * Created by Julian on 24.06.2016.
  */
-public class Ant implements WorldObject {
+public abstract class Ant implements WorldObject {
 
-    //TODO implement Methods
-    private int antFood;
-    private Position pos;
-    private Position lastPos;
+    private double movementSpeed = 2;
+
+    protected Position pos;
+    protected Position lastPos;
 
     public Ant(Position pos) {
         this.pos = this.lastPos = pos;
@@ -25,13 +25,6 @@ public class Ant implements WorldObject {
         this.pos = pos;
     }
 
-    public int getFood() {
-        return antFood;
-    }
-
-    public void setFood(int f) {
-        antFood = f;
-    }
-
+    public abstract void tick();
 
 }

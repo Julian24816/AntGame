@@ -41,7 +41,6 @@ public class MainActivity extends Activity
     }
 
 
-
     @Override
     public void onClick(View v) {
         if (v.getId()==R.id.title) {

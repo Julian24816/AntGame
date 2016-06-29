@@ -10,6 +10,8 @@ public abstract class Ant implements WorldObject {
     protected Position pos;
     protected Position lastPos;
 
+    protected Position targetPosition;
+
     public Ant(Position pos) {
         this.pos = this.lastPos = pos;
     }
@@ -23,6 +25,14 @@ public abstract class Ant implements WorldObject {
     public void setPosition(Position pos) {
         lastPos = this.pos;
         this.pos = pos;
+    }
+
+    public Position getTargetPosition() {
+        return targetPosition;
+    }
+
+    public void setTargetPosition(Position targetPosition) {
+        this.targetPosition = targetPosition;
     }
 
     public abstract void tick();

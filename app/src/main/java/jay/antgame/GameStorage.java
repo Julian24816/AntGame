@@ -103,8 +103,8 @@ public class GameStorage extends SQLiteOpenHelper {
                 + " where " + SAVE_ID + " = ?",new String[]{String.valueOf(saveId)});
         while (res.moveToNext()) {
             scentTrails.add(new ScentTrail(
-                    new Position(res.getDouble(0), res.getDouble(1)), // pos
-                    new Position(res.getDouble(2), res.getDouble(3)), // targetPos
+                    new Position(res.getFloat(0), res.getFloat(1)), // pos
+                    new Position(res.getFloat(2), res.getFloat(3)), // targetPos
                     res.getInt(4)));
         }
         res.close();
@@ -119,7 +119,7 @@ public class GameStorage extends SQLiteOpenHelper {
                 + FOOD_SOURCE_MAX_FOOD_AMOUNT + " from " + TABLE_FOOD_SOURCES
                 + " where " + SAVE_ID + " = ?",new String[]{String.valueOf(saveId)});
         while (res.moveToNext()) {
-            FoodSource fs = new FoodSource(new Position(res.getDouble(0), res.getDouble(1)),
+            FoodSource fs = new FoodSource(new Position(res.getFloat(0), res.getFloat(1)),
                                            res.getInt(3));
             fs.lowerFood(res.getInt(3) - res.getInt(2));
             foodSources.add(fs);
@@ -136,8 +136,8 @@ public class GameStorage extends SQLiteOpenHelper {
                 + TARGET_POS_Y + ", " + FOOD_AMOUNT + " from " + TABLE_ANTS
                 + " where " + SAVE_ID + " = ?",new String[]{String.valueOf(saveId)});
         while (res.moveToNext()) {
-            Worker ant = new Worker(new Position(res.getDouble(0), res.getDouble(1)));
-            ant.setPosition(new Position(res.getDouble(2), res.getDouble(3)));
+            Worker ant = new Worker(new Position(res.getFloat(0), res.getFloat(1)));
+            ant.setPosition(new Position(res.getFloat(2), res.getFloat(3)));
             ant.setFood(res.getInt(4));
             ants.add(ant);
         }
@@ -152,7 +152,7 @@ public class GameStorage extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select " + POS_X + ", " + POS_Y + ", " + FOOD_AMOUNT + " from "
                 + TABLE_NEST + " where " + SAVE_ID + " = ?",new String[]{String.valueOf(saveId)});
         if (res.moveToNext()) {
-            nest = new Nest(new Position(res.getDouble(0), res.getDouble(1)));
+            nest = new Nest(new Position(res.getFloat(0), res.getFloat(1)));
             nest.addFoodAmount(res.getInt(2));
         }
         res.close();

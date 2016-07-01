@@ -18,4 +18,13 @@ public class Position {
     public double getY() {
         return y;
     }
+
+    public void addX(double x){
+        this.x+= x;
+    }
+
+    public void addY(double y){
+        this.x+= y;
+    }
+    
 }

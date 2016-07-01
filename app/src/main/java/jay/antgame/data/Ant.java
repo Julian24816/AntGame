@@ -8,7 +8,7 @@ public abstract class Ant implements WorldObject {
     private double movementSpeed = 2;
 
     protected Position pos;
-    protected Position lastPos;
+    protected double angle = 0;
 
     protected Position targetPosition;
 

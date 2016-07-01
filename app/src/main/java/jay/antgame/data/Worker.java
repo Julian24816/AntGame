@@ -10,6 +10,7 @@ public class Worker extends Ant {
 
     private double movementSpeed = 3;
 
+    private final double randomRotation = 0.02;
 
     public Worker(Position position) {
         super(position);
@@ -22,6 +23,10 @@ public class Worker extends Ant {
             double y = targetPosition.getY()-pos.getY();
             double tan = y/x;
 
+        }else{
+            angle += Math.random()* randomRotation;
+            pos.addX( movementSpeed*Math.sin(angle) );
+            pos.addY( movementSpeed*Math.cos(angle) );
         }
 
     }

@@ -45,7 +45,6 @@ public class MainActivity extends Activity
         gameStorage = new GameStorage(this);
     }
 
-
     @Override
     public void onClick(View v) {
         if (v.getId()==R.id.title) {

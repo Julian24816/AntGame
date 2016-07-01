@@ -1,13 +1,8 @@
 package jay.antgame;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.graphics.Typeface;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -19,8 +14,10 @@ import jay.antgame.data.World;
 
 /**
  * Created by Julian on 09.06.2016.
+ *
+ * @author Julian
  */
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
         implements View.OnClickListener {
 
     private ViewGroup container;
@@ -29,32 +26,61 @@ public class MainActivity extends Activity
     private GameStorage gameStorage;
 
 
+    /**
+     * initializes the App
+     *
+     * Overrides Method from AppCompatActivity;
+     * this method gets called when the Activity becomes visible for the first time
+     *
+     * @param savedInstanceState the saved Instance State
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // show the activity_main layout -> res/layout/activity_main.xml
         setContentView(R.layout.activity_main);
 
+        // load Typeface from assets -> assets/airmole.ttf
         Typeface t = Typeface.createFromAsset(getAssets(), "airmole.ttf");
-
+        // fetch view with id title -> defined in activity_main.xml
         TextView title = (TextView) findViewById(R.id.title);
-        title.setTypeface(t);
-        title.setOnClickListener(this);
+        if (title != null) {
+            title.setTypeface(t);
+            title.setOnClickListener(this);
+        }
+        // and make this instance the OnClickListener -> this.OnClick(View v)
 
+        // save the View with id container to a field
+        // -> will get filled with the GameView in startGame()
         container = (ViewGroup) findViewById(R.id.container);
 
+        // initialize the GameStorage
         gameStorage = new GameStorage(this);
     }
 
 
+    /**
+     * Method of the View.OnClickListener interface.
+     *
+     * this method gets called when a View with its OnClickListener set to this Instance is clicked
+     *
+     * @param v the View that was clicked
+     */
     @Override
     public void onClick(View v) {
+
+        // if the clicked View was the title view
         if (v.getId()==R.id.title) {
+
+            // show an Animation and ...
             Animation a = AnimationUtils.loadAnimation(this, R.anim.abc_fade_out);
             a.setAnimationListener(new Animation.AnimationListener() {
                 @Override public void onAnimationStart(Animation animation) {}
                 @Override public void onAnimationRepeat(Animation animation) {}
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    //... start the Game on the end of the Animation
                     startGame();
                 }
             });
@@ -63,6 +89,16 @@ public class MainActivity extends Activity
     }
 
 
+    /**
+     * stops the GameEngine's Loop if present
+     * the GameView's loop is stopped via GameEngine.onSurfaceDestroyed
+     *
+     * Overrides Method of AppCompatActivity;
+     * this method is called when the Display is locked or the user leaves the App without
+     * destroying it.
+     * This method is also called when the Application is destroyed; afterwards onDestroy will be
+     * called.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -70,24 +106,42 @@ public class MainActivity extends Activity
     }
 
 
+    /**
+     * restarts the GameEngine's Loop if present
+     * the GameView's loop is started via GameEngine.onSurfaceCreated
+     *
+     * Overrides Method of AppCompatActivity;
+     * this method is called when the Display is unlocked or the user reenters the App without
+     * restarting it.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (gameEngine!=null) gameEngine.resume();
+    }
+
+
+    /**
+     * starts the Game
+     */
     private void startGame() {
 
+        // remove title View
         findViewById(R.id.title).setVisibility(View.GONE);
 
         // load World from database
         World world = gameStorage.getNewWorld();
 
-        // create new GameView and show the World
+        // create new GameView and show it
         gameView = new GameView(this, world);
         container.addView(gameView,
                 new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // create GameEngine and start
+        // create GameEngine and start it
         gameEngine = new GameEngine(gameView, world);
         gameEngine.start();
     }
-
 
 }

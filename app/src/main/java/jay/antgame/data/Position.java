@@ -4,18 +4,18 @@ package jay.antgame.data;
  * Created by Julian on 24.06.2016.
  */
 public class Position {
-    private double x,y;
+    private float x,y;
 
-    public Position(double x, double y) {
+    public Position(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public double getX() {
+    public float getX() {
         return x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 

@@ -44,6 +44,7 @@ public class GameEngine implements Runnable {
     public GameEngine(GameView gameView, World world) {
         this.world = world;
         this.gameView = gameView;
+        world.setDimension(gameView.getWorldWidth(),gameView.getWorldHeight());
     }
 
     public void start() {

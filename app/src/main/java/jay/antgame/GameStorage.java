@@ -192,7 +192,7 @@ public class GameStorage extends SQLiteOpenHelper {
 
         List<Ant> ants = new LinkedList<>();
         for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));
-        ants.add(new Worker(new Position(-100,100)));
+        ants.add(new Worker(new Position(100,-100)));
 
         List<FoodSource> sources = new LinkedList<>();
         sources.add(new FoodSource(new Position(200,100), 50));

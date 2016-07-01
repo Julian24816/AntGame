@@ -147,4 +147,9 @@ public class GameView extends SurfaceView
     public void surfaceDestroyed(SurfaceHolder holder) {
         executorService.shutdown();
     }
+
+    public int getWorldWidth(){ return width; }
+
+    public int getWorldHeight(){ return height; }
+
 }

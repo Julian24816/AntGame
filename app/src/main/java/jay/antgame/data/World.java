@@ -13,6 +13,9 @@ public class World {
     private Nest nest;
     private int food;
 
+    private int width;
+    private int height;
+
     private int workerLevel = 1;
 
     private int workerLevelCost = 10;
@@ -65,5 +68,14 @@ public class World {
     public int getWorkerLevel(){ return workerLevel; }
 
     public void increaseWorkerLevel(){ workerLevel+= 1; }
+
+    public int getWidth(){ return width; }
+
+    public int getHeight(){ return  height; }
+
+    public void setDimension(int width, int height){
+        this.width = width;
+        this.height = height;
+    }
 
 }

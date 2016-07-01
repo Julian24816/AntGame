@@ -10,7 +10,7 @@ public class Worker extends Ant {
 
     private double movementSpeed = 3;
 
-    private final double randomRotation = 0.02;
+    private final double randomRotation = 0.3;
 
     public Worker(Position position) {
         super(position);

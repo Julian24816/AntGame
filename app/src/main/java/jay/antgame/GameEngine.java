@@ -2,6 +2,7 @@ package jay.antgame;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -47,10 +48,13 @@ public class GameEngine implements Runnable {
 
     public void start() {
         executorService = Executors.newSingleThreadScheduledExecutor();
-
-
         executorService.scheduleAtFixedRate(this,
                 MS_PER_FRAME, MS_PER_FRAME, TimeUnit.MILLISECONDS);
+    }
+
+    public void resume() {
+        Log.d("antgame", "GameEngine.resume was called");
+        this.start();
     }
 
     public void stop() {

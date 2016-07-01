@@ -27,8 +27,8 @@ public class GameView extends SurfaceView
 
     private static final long FRAME_INTERVAL = 20;
 
-    private static final int NEST_SIZE = 30;
-    private static final int FOOD_SOURCE_SIZE = 20;
+    private static final int NEST_SIZE = 50;
+    private static final int FOOD_SOURCE_SIZE = 30;
     private static final int SCENT_TRAIL_SIZE = 10;
     private static final int ANT_SIZE = 5;
 

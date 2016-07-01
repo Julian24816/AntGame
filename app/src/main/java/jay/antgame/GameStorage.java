@@ -19,6 +19,8 @@ import jay.antgame.data.World;
 
 /**
  * Created by Julian on 29.06.2016.
+ *
+ * @author Julian
  */
 public class GameStorage extends SQLiteOpenHelper {
 
@@ -64,11 +66,24 @@ public class GameStorage extends SQLiteOpenHelper {
             + SCENT_TRAIL_REMAINING_LIFE_TIME + " integer, " + SAVE_ID + " integer)";
 
 
-
+    /**
+     * calls the SuperConstructor
+     *
+     * @param context the GameStorage's context
+     */
     public GameStorage(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * creates the database tables.
+     *
+     * Overrides method of SQLiteOpenHelper;
+     * this method gets called when the SQLiteOpenHelper constructor created the database aka on
+     * the first run of the App
+     *
+     * @param db the created database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
@@ -81,6 +96,17 @@ public class GameStorage extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * alters the database to fit the new version
+     *
+     * Overrides method of SQLiteOpenHelper;
+     * this method gets called upon the SQLiteOpenHelper constructor realizing that the database
+     * version isn't equal to its parameter
+     *
+     * @param db the database
+     * @param oldVersion the databases current version
+     * @param newVersion the requested new version
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -168,10 +194,10 @@ public class GameStorage extends SQLiteOpenHelper {
         for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));
 
         List<FoodSource> sources = new LinkedList<>();
-        sources.add(new FoodSource(new Position(20,10), 50));
-        sources.add(new FoodSource(new Position(-10,10), 50));
-        sources.add(new FoodSource(new Position(-20,-10), 50));
-        sources.add(new FoodSource(new Position(10,-10), 50));
+        sources.add(new FoodSource(new Position(200,100), 50));
+        sources.add(new FoodSource(new Position(-100,100), 50));
+        sources.add(new FoodSource(new Position(-200,-100), 50));
+        sources.add(new FoodSource(new Position(100,-100), 50));
 
 
         List<ScentTrail> trails = new LinkedList<>();

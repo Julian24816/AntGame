@@ -27,6 +27,8 @@ public class GameView extends SurfaceView
 
     private static final long FRAME_INTERVAL = 20;
 
+    private static final float ZOOMFACTOR = 0.4f;
+
     private static final int NEST_SIZE = 50;
     private static final int FOOD_SOURCE_SIZE = 30;
     private static final int SCENT_TRAIL_SIZE = 10;
@@ -91,8 +93,8 @@ public class GameView extends SurfaceView
 
     private ScreenPosition getScreenCoordinates(Position pos) {
 
-        float x = width/2 + pos.getX()*density;
-        float y = height/2 - pos.getY()*density;
+        float x = width/2 + pos.getX()*density* ZOOMFACTOR;
+        float y = height/2 - pos.getY()*density* ZOOMFACTOR;
 
         return new ScreenPosition(x,y);
     }
@@ -105,26 +107,26 @@ public class GameView extends SurfaceView
 
         // draw Nest
         Position nestPos = getScreenCoordinates(gameWorld.getNest().getPosition());
-        canvas.drawCircle(nestPos.getX(), nestPos.getY(), NEST_SIZE*density/2, paintNest);
+        canvas.drawCircle(nestPos.getX(), nestPos.getY(), NEST_SIZE*density* ZOOMFACTOR /2, paintNest);
 
         // draw FoodSources
         for (FoodSource source: gameWorld.getFoodSources()) {
             Position sourcePos = getScreenCoordinates(source.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), FOOD_SOURCE_SIZE*density/2,
+            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), FOOD_SOURCE_SIZE*density* ZOOMFACTOR /2,
                     paintFoodSource);
         }
 
         // draw ScentTrails
         for (ScentTrail trail: gameWorld.getScentTrails()) {
             Position sourcePos = getScreenCoordinates(trail.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), SCENT_TRAIL_SIZE*density/2,
+            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), SCENT_TRAIL_SIZE*density* ZOOMFACTOR /2,
                     paintScentTrail);
         }
 
         // draw FoodSources
         for (Ant ant: gameWorld.getAnts()) {
             Position sourcePos = getScreenCoordinates(ant.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), ANT_SIZE*density/2,
+            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), ANT_SIZE*density* ZOOMFACTOR /2,
                     paintAnt);
         }
 

@@ -24,7 +24,7 @@ public class Position {
     }
 
     public void addY(double y){
-        this.x+= y;
+        this.y+= y;
     }
     
 }

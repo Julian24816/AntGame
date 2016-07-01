@@ -98,7 +98,7 @@ public class GameEngine implements Runnable {
 
     private void tickAnts(){
         for(Ant ant: world.getAnts()){
-            ant.tick();
+            ant.tick(world);
         }
     }
 

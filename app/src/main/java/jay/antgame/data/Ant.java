@@ -36,6 +36,6 @@ public abstract class Ant implements WorldObject {
         this.targetPosition = targetPosition;
     }
 
-    public abstract void tick();
+    public abstract void tick(World world);
 
 }

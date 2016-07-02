@@ -6,14 +6,14 @@ package jay.antgame.data;
 
 public class Worker extends Ant {
 
-    private int antFood;
+    private int antFood = 0;
 
     private double movementSpeed = 3;
 
     private final double nearFoodVariable = 20;
     private final double randomRotation = 0.5;
     //Bereich an Ende der Map, ab welchem die Ameisen wieder umdrehen
-    private final int worldEndPuffer = 20;
+    private final int worldEndPuffer = 300;
     private final int abdrehWinkel = 2;
 
     public Worker(Position position) {
@@ -32,17 +32,21 @@ public class Worker extends Ant {
                 double targetAngle = Math.tanh(y / x);
                 if(x<0)
                     targetAngle += Math.PI;
-                System.out.println( "Target Angle = "+x+"/"+y+ "  tanh "+targetAngle );
+                //System.out.println( "Target Angle = "+x+"/"+y+ "  tanh "+targetAngle );
                 pos.addX(movementSpeed * Math.cos(targetAngle));
                 pos.addY(movementSpeed * Math.sin(targetAngle));
             }else{
                 //Wenn Ziel erreicht kein Ziel mehr
+                if(targetPosition==world.getNest().getPosition()){
+                    world.addFood(antFood);
+                    antFood = 0;
+                }
                 targetPosition = null;
             }
 
         }else{
             //Wenn kein Ziel Winkel zufällig ändern und weiterlaufen
-            if(!checkIfOnFQ(world)) {
+            if(!checkIfOnFS(world)) {
                 angle += (0.5 - Math.random()) * randomRotation;
                 if(pos.getX()<-world.getWidth()/2+worldEndPuffer||pos.getX()>world.getWidth()/2-worldEndPuffer
                         ||pos.getY()<-world.getHeight()/2+worldEndPuffer||pos.getY()>world.getHeight()/2-worldEndPuffer)
@@ -57,13 +61,15 @@ public class Worker extends Ant {
 
     }
 
-    private boolean checkIfOnFQ(World world){
-        boolean onFQ = false;
+    private boolean checkIfOnFS(World world){
+        boolean onFS = false;
         for(FoodSource foodSource: world.getFoodSources()){
-            if(checkIfOn(foodSource.getPosition(),nearFoodVariable))
-                onFQ = true;
+            if(checkIfOn(foodSource.getPosition(),nearFoodVariable)){
+                onFS = true;
+                antFood = foodSource.removeFood(world.getWorkerFoodCapacity());
+            }
         }
-        return onFQ;
+        return onFS;
     }
 
     private boolean checkIfOn(Position targetPosition, double nearTargetVariable){

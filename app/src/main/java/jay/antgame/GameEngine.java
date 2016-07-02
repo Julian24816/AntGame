@@ -66,6 +66,7 @@ public class GameEngine implements Runnable {
     public void run() {
 
         tickAnts();
+        System.out.println(world.getFood());
 
         // check for gameOver?
         // stop()

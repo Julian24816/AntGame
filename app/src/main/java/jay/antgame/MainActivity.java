@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity
             title.setTypeface(t);
             title.setOnClickListener(this);
         }
+
+        TextView foodView = (TextView) findViewById(R.id.foodView);
+        if (foodView != null) {
+            foodView.setTypeface(t);
+            foodView.setText("0 Food");
+        }
+
         // and make this instance the OnClickListener -> this.OnClick(View v)
 
         // save the View with id container to a field
@@ -129,11 +136,12 @@ public class MainActivity extends AppCompatActivity
         // remove title View
         findViewById(R.id.title).setVisibility(View.GONE);
 
+
         // load World from database
         World world = gameStorage.getNewWorld();
 
         // create new GameView and show it
-        gameView = new GameView(this, world);
+        gameView = new GameView(this, world, Typeface.createFromAsset(getAssets(), "airmole.ttf"));
         container.addView(gameView,
                 new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,

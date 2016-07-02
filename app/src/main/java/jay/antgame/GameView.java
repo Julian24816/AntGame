@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -58,9 +59,10 @@ public class GameView extends SurfaceView
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
     private Paint paintAnt = new Paint();
+    private Paint foodDisplay = new Paint();
 
 
-    public GameView(Context context, World gameWorld) {
+    public GameView(Context context, World gameWorld, Typeface t) {
         super(context);
 
         this.gameWorld = gameWorld;
@@ -87,6 +89,11 @@ public class GameView extends SurfaceView
         paintAnt.setAntiAlias(true);
         paintAnt.setColor(Color.BLACK);
         paintAnt.setStyle(Paint.Style.FILL);
+
+        foodDisplay.setTextSize(50);
+        foodDisplay.setTypeface(t);
+
+
 
         getHolder().addCallback(this);
     }
@@ -129,6 +136,10 @@ public class GameView extends SurfaceView
             canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), ANT_SIZE*density* ZOOMFACTOR /2,
                     paintAnt);
         }
+
+        canvas.drawText("Food: "+gameWorld.getFood(), width-200, 100, foodDisplay);
+
+
 
 
     }

@@ -17,9 +17,11 @@ public class World {
     private int height;
 
     private int workerLevel = 1;
+    private int workerFoodCapacity = 1;
 
     private int workerLevelCost = 10;
     private final int workerExpLevelCostIncrecment = 3;
+    private final int workerExpFoodCapacityIncrecmentPLevel = 2;
 
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
@@ -67,11 +69,13 @@ public class World {
 
     public int getWorkerLevel(){ return workerLevel; }
 
-    public void increaseWorkerLevel(){ workerLevel+= 1; }
+    public void increaseWorkerLevel(){ workerLevel+= 1; workerFoodCapacity*= workerExpFoodCapacityIncrecmentPLevel; }
 
     public int getWidth(){ return width; }
 
     public int getHeight(){ return  height; }
+
+    public int getWorkerFoodCapacity(){ return workerFoodCapacity; }
 
     public void setDimension(int width, int height){
         this.width = width;

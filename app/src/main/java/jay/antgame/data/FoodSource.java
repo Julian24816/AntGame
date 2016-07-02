@@ -29,4 +29,15 @@ public class FoodSource implements WorldObject {
     public void lowerFood(int f) {sourceFood=sourceFood - f;}
 
     public int getFood() {return sourceFood;}
+
+    //Entferne wantedFood wenn genug da ist, sonst entferne alles was noch da ist
+    public int removeFood(int wantedFood){
+        if(sourceFood<=wantedFood){
+            sourceFood -= wantedFood;
+            return  wantedFood;
+        }else{
+            sourceFood = 0;
+            return  sourceFood;
+        }
+    }
 }

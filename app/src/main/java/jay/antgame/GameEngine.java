@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import jay.antgame.data.Ant;
+import jay.antgame.data.Position;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 
@@ -66,7 +67,6 @@ public class GameEngine implements Runnable {
     public void run() {
 
         tickAnts();
-        System.out.println(world.getFood());
 
         // check for gameOver?
         // stop()
@@ -102,6 +102,10 @@ public class GameEngine implements Runnable {
         for(Ant ant: world.getAnts()){
             ant.tick(world);
         }
+    }
+
+    public void click(Position p){
+        System.out.println(p.getX()+ " , "+p.getY());
     }
 
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -104,6 +105,14 @@ public class GameView extends SurfaceView
         float y = height/2 - pos.getY()*density* ZOOMFACTOR;
 
         return new ScreenPosition(x,y);
+    }
+
+    public Position getWorldPosition(float screenX, float screenY){
+
+        float x = -(width/2-screenX)/density/ZOOMFACTOR;
+        float y = (height/2-screenY)/density/ZOOMFACTOR;
+
+        return new Position(x,y);
     }
 
 

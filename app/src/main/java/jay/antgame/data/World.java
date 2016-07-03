@@ -29,6 +29,9 @@ public class World {
     private final int workerExpLevelCostIncrecment = 3;
     private final int workerExpFoodCapacityIncrecmentPLevel = 2;
 
+    private boolean showShop = false;
+    private String[] shopList = new String[]{"Faster Ants:Ants get 1 more movement speed","More Ants:Increase amount of ants"};
+
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
         foodSources = sources;
@@ -97,6 +100,12 @@ public class World {
     public double getWorkerMovmentSpeed(){ return workerMovementSpeed; }
 
     public double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
+
+    public String[] getShopList(){ return shopList; }
+
+    public boolean showShop(){ return showShop; }
+
+    public void setShowShop(boolean show){ showShop= show; }
 
     public void setDimension(int width, int height){
         this.width = width;

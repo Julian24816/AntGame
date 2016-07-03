@@ -42,6 +42,8 @@ public class GameEngine implements Runnable {
     private int workerUpgradeCost = 10;
     private int workerCost = 1;
 
+    private final int clickAcecptionRadius = 30;
+
     public GameEngine(GameView gameView, World world) {
         this.world = world;
         this.gameView = gameView;
@@ -107,6 +109,14 @@ public class GameEngine implements Runnable {
 
     public void click(Position p){
         System.out.println(p.getX()+ " , "+p.getY());
+        float nestX = world.getNest().getPosition().getX();
+        float nestY = world.getNest().getPosition().getY();
+        if(!world.showShop()&&samePosition(p,world.getNest().getPosition(),clickAcecptionRadius)){
+            world.setShowShop(true);
+        }else if(world.showShop()&&(p.getX()<nestX-gameView.getShopWidth()/2||p.getX()>nestX+gameView.getShopWidth()/2
+                ||p.getY()<nestY-gameView.getShopHeight()/2||p.getY()>nestY+gameView.getShopHeight()/2)){
+            world.setShowShop(false);
+        }
     }
 
     public String mischen(String[] zutaten, int aktZutat, String ergebnis){
@@ -116,6 +126,17 @@ public class GameEngine implements Runnable {
         }else{
             return "Obstsalat";
         }
+    }
+
+    public static boolean samePosition(Position position1, Position position2, double nearTargetVariable){
+
+        boolean nearX = -nearTargetVariable<position2.getX()-position1.getX()&&position2.getX()-position1.getX()<nearTargetVariable;
+        boolean nearY = -nearTargetVariable<position2.getY()-position1.getY()&&position2.getY()-position1.getY()<nearTargetVariable;
+        if(nearX&&nearY)
+            return true;
+        else
+            return false;
+
     }
 
 }

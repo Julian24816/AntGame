@@ -1,5 +1,7 @@
 package jay.antgame.data;
 
+import jay.antgame.GameEngine;
+
 /**
  * Created by Yannick.Pfeiffer on 29.06.2016.
  */
@@ -71,12 +73,7 @@ public class Worker extends Ant {
 
     private boolean checkIfOn(Position targetPosition, double nearTargetVariable){
 
-        boolean nearX = -nearTargetVariable<targetPosition.getX()-pos.getX()&&targetPosition.getX()-pos.getX()<nearTargetVariable;
-        boolean nearY = -nearTargetVariable<targetPosition.getY()-pos.getY()&&targetPosition.getY()-pos.getY()<nearTargetVariable;
-        if(nearX&&nearY)
-            return true;
-        else
-            return false;
+        return GameEngine.samePosition(pos,targetPosition,nearTargetVariable);
 
     }
 

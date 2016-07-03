@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -60,10 +61,13 @@ public class GameView extends SurfaceView
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
     private Paint paintAnt = new Paint();
-    private Paint foodDisplay = new Paint();
+
+    private Paint text = new Paint();
+    private int textSizeShopListItem= 60;
+    private int textSizeShopItemDiscription= 40;
 
     private Paint menu = new Paint();
-
+    private float shopBackgroundWidth = 600;
 
     public GameView(Context context, World gameWorld, Typeface t) {
         super(context);
@@ -93,11 +97,9 @@ public class GameView extends SurfaceView
         paintAnt.setColor(Color.BLACK);
         paintAnt.setStyle(Paint.Style.FILL);
 
-        foodDisplay.setTextSize(50);
-        foodDisplay.setTypeface(t);
+        text.setTypeface(t);
 
-        menu.setTextSize(60);
-
+        menu.setColor(Color.GRAY);
 
 
 
@@ -151,14 +153,42 @@ public class GameView extends SurfaceView
                     paintAnt);
         }
 
-        canvas.drawText("Food: "+gameWorld.getFood(), width-200, 100, foodDisplay);
+        text.setTextSize(50);
+        canvas.drawText("Food: "+gameWorld.getFood(), width-200, 100, text);
 
         //Draw Background + Menu Text if Menu is shown
+        if(gameWorld.showShop()) {
+
+            text.setTextSize(textSizeShopListItem);
+            int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
+            float shopBackgroundHeigth = gameWorld.getShopList().length * itemHeight;
+            ScreenPosition nestPosition = getScreenCoordinates(gameWorld.getNest().getPosition());
+            canvas.drawRect(nestPosition.getX() - shopBackgroundWidth / 2, nestPosition.getY() - shopBackgroundHeigth / 2,
+                    nestPosition.getX() + shopBackgroundWidth / 2, nestPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4, menu);
+
+            String[] lines = gameWorld.getShopList();
+            for (int i = 0; i < lines.length; i++) {
+                String[] parts = lines[i].split(":");
+                text.setTextSize(textSizeShopListItem);
+                canvas.drawText(parts[0], nestPosition.getX() - shopBackgroundWidth / 2 + 10,
+                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight, text);
+                text.setTextSize(textSizeShopItemDiscription);
+                canvas.drawText(parts[1], nestPosition.getX() - shopBackgroundWidth / 2 + 10,
+                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem, text);
+            }
+
+        }
 
 
 
 
     }
+
+    public float getShopHeight(){
+        return gameWorld.getShopList().length * (textSizeShopListItem + textSizeShopItemDiscription);
+    }
+
+    public float getShopWidth(){ return shopBackgroundWidth; }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

@@ -30,7 +30,8 @@ public class World {
     private final int workerExpFoodCapacityIncrecmentPLevel = 2;
 
     private boolean showShop = false;
-    private String[] shopList = new String[]{"Faster Ants:Ants get 1 more movement speed","More Ants:Increase amount of ants"};
+    private final String[] shopList = new String[]{"Buy Worker:Spawn 1 working ant","More Ants:Increase amount of ants"};
+    private String[] shownShopList = shopList;
 
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
@@ -78,15 +79,30 @@ public class World {
 
     public int getWorkerLevel(){ return workerLevel; }
 
-    public boolean buyWorker(){
-        if(food<=workerCost){
-            ants.add(new Worker(nest.getPosition()));
+    public String buyWorker(){
+        if(food>=workerCost){
+            ants.add(new Worker(nest.getPosition().clone()));
             food -= workerCost;
             workerCost *= expWorkerCostIncrecment;
-            return true;
+            return "One Worker spawned";
         }else{
-            return false;
+            return "You need "+(workerCost-food)+" more Food";
         }
+    }
+
+    public String buy(String order){
+        int id = 0;
+        for(int i=0;i<shopList.length;i++){
+            if(shopList[i].equals(order)){
+                id = i;
+                break;
+            }
+        }
+        switch (id) {
+            case 0:
+                return buyWorker();
+        }
+        return "";
     }
 
     public void increaseWorkerLevel(){ workerLevel+= 1; workerFoodCapacity*= workerExpFoodCapacityIncrecmentPLevel; }
@@ -101,7 +117,7 @@ public class World {
 
     public double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
 
-    public String[] getShopList(){ return shopList; }
+    public String[] getShopList(){ return shownShopList; }
 
     public boolean showShop(){ return showShop; }
 

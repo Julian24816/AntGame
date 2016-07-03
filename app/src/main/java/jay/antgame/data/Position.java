@@ -26,5 +26,9 @@ public class Position {
     public void addY(double y){
         this.y+= y;
     }
+
+    public Position clone(){
+        return new Position(x,y);
+    }
     
 }

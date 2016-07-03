@@ -69,6 +69,10 @@ public class GameView extends SurfaceView
     private Paint menu = new Paint();
     private float shopBackgroundWidth = 600;
 
+    private int tempTextSize = 55;
+    private String tempText = "";
+    private int tempTextTime = 0;
+
     public GameView(Context context, World gameWorld, Typeface t) {
         super(context);
 
@@ -179,10 +183,23 @@ public class GameView extends SurfaceView
 
         }
 
+        if(tempTextTime>0){
+            text.setTextSize(tempTextSize);
+            canvas.drawText(tempText, 100 ,height-height/6, text);
+            tempTextTime--;
+        }
+
 
 
 
     }
+
+    public void writeTempText(String text){
+        tempText = text;
+        tempTextTime = 1000;
+    }
+
+    public int getShopItemHeight(){ return textSizeShopListItem + textSizeShopItemDiscription; }
 
     public float getShopHeight(){
         return gameWorld.getShopList().length * (textSizeShopListItem + textSizeShopItemDiscription);

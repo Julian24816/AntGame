@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +73,7 @@ public class GameView extends SurfaceView
     private int tempTextSize = 55;
     private String tempText = "";
     private int tempTextTime = 0;
+    private final int TEMPTEXTTIMESHOWN = 200;
 
     public GameView(Context context, World gameWorld, Typeface t) {
         super(context);
@@ -165,16 +167,16 @@ public class GameView extends SurfaceView
 
             text.setTextSize(textSizeShopListItem);
             int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
-            float shopBackgroundHeigth = gameWorld.getShopList().length * itemHeight;
+            float shopBackgroundHeigth = gameWorld.getShopList().size() * itemHeight;
             ScreenPosition nestPosition = getScreenCoordinates(gameWorld.getNest().getPosition());
             canvas.drawRect(nestPosition.getX() - shopBackgroundWidth / 2, nestPosition.getY() - shopBackgroundHeigth / 2,
                     nestPosition.getX() + shopBackgroundWidth / 2, nestPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4, menu);
 
-            String[] lines = gameWorld.getShopList();
-            for (int i = 0; i < lines.length; i++) {
-                String[] parts = lines[i].split(":");
+            List<String> lines = gameWorld.getShopList();
+            for (int i = 0; i < lines.size(); i++) {
+                String[] parts = lines.get(i).split(":");
                 text.setTextSize(textSizeShopListItem);
-                canvas.drawText(parts[0], nestPosition.getX() - shopBackgroundWidth / 2 + 10,
+                canvas.drawText(parts[0]+" ("+gameWorld.getShopCosts()[i]+")", nestPosition.getX() - shopBackgroundWidth / 2 + 10,
                         nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight, text);
                 text.setTextSize(textSizeShopItemDiscription);
                 canvas.drawText(parts[1], nestPosition.getX() - shopBackgroundWidth / 2 + 10,
@@ -196,13 +198,13 @@ public class GameView extends SurfaceView
 
     public void writeTempText(String text){
         tempText = text;
-        tempTextTime = 1000;
+        tempTextTime = TEMPTEXTTIMESHOWN;
     }
 
     public int getShopItemHeight(){ return textSizeShopListItem + textSizeShopItemDiscription; }
 
     public float getShopHeight(){
-        return gameWorld.getShopList().length * (textSizeShopListItem + textSizeShopItemDiscription);
+        return gameWorld.getShopList().size() * (textSizeShopListItem + textSizeShopItemDiscription);
     }
 
     public float getShopWidth(){ return shopBackgroundWidth; }

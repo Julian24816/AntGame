@@ -1,5 +1,6 @@
 package jay.antgame.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,6 @@ public class World {
     private double workerMovementSpeed = 3;
     private double workerNearFoodVariable = 20;
 
-    private int workerCost = 10;
     private int expWorkerCostIncrecment = 2;
 
     private int workerLevelCost = 10;
@@ -30,8 +30,9 @@ public class World {
     private final int workerExpFoodCapacityIncrecmentPLevel = 2;
 
     private boolean showShop = false;
-    private final String[] shopList = new String[]{"Buy Worker:Spawn 1 working ant","More Ants:Increase amount of ants"};
-    private String[] shownShopList = shopList;
+    private String[] shopList = new String[]{"Buy Worker:Spawn 1 working ant","More Ants:Increase amount of ants"};
+    private int[] shopCosts = new int[]{10,0};
+    private ArrayList<String> shownShopList = new ArrayList<String>();
 
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
@@ -39,6 +40,8 @@ public class World {
         scentTrails = trails;
         this.nest = nest;
         food = 0;
+        for(String s: shopList)
+            shownShopList.add(s);
     }
 
     /*
@@ -80,13 +83,25 @@ public class World {
     public int getWorkerLevel(){ return workerLevel; }
 
     public String buyWorker(){
-        if(food>=workerCost){
+        if(food>=shopCosts[0]){
             ants.add(new Worker(nest.getPosition().clone()));
-            food -= workerCost;
-            workerCost *= expWorkerCostIncrecment;
+            food -= shopCosts[0];
+            shopCosts[0] *= expWorkerCostIncrecment;
+            //aktShopList(shopList[0],"Buy Worker ("+workerCost+"):Spawn 1 working ant");
             return "One Worker spawned";
         }else{
-            return "You need "+(workerCost-food)+" more Food";
+            return "You need "+(shopCosts[0]-food)+" more Food";
+        }
+    }
+
+    public void aktShopList(String old, String newS){
+        for(int i=0;i<shopList.length;i++){
+            if(i<shownShopList.size()){
+                if(shownShopList.get(i).equals(old))
+                    shownShopList.set(i,newS);
+            }
+            if(shopList[i].equals(old))
+                shopList[i] = newS;
         }
     }
 
@@ -117,7 +132,9 @@ public class World {
 
     public double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
 
-    public String[] getShopList(){ return shownShopList; }
+    public List<String> getShopList(){ return shownShopList; }
+
+    public int[] getShopCosts(){ return shopCosts; }
 
     public boolean showShop(){ return showShop; }
 

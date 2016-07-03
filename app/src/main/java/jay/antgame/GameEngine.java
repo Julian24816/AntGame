@@ -119,7 +119,7 @@ public class GameEngine implements Runnable {
         }else if(world.showShop()){
             int line = (int)( ( nestY+gameView.getShopHeight()/2-p.getY() ) / gameView.getShopItemHeight() );
             //System.out.println(world.getShopList()[line]);
-            String answer = world.buy(world.getShopList()[line]);
+            String answer = world.buy(world.getShopList().get(line));
             gameView.writeTempText(answer);
         }
     }

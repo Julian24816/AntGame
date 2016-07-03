@@ -188,6 +188,7 @@ public class GameStorage extends SQLiteOpenHelper {
 
 
     public World getNewWorld() {
+
         Nest nest = new Nest(new Position(0,0));
 
         List<Ant> ants = new LinkedList<>();

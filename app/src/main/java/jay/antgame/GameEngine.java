@@ -111,9 +111,8 @@ public class GameEngine implements Runnable {
 
     public String mischen(String[] zutaten, int aktZutat, String ergebnis){
         if(aktZutat<zutaten.length){
-            aktZutat += 1;
             ergebnis += zutaten[aktZutat];
-            return mischen(zutaten, aktZutat, ergebnis);
+            return mischen(zutaten, aktZutat+1, ergebnis);
         }else{
             return "Obstsalat";
         }

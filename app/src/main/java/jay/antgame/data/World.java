@@ -19,6 +19,12 @@ public class World {
     private int workerLevel = 1;
     private int workerFoodCapacity = 1;
 
+    private double workerMovementSpeed = 3;
+    private double workerNearFoodVariable = 20;
+
+    private int workerCost = 10;
+    private int expWorkerCostIncrecment = 2;
+
     private int workerLevelCost = 10;
     private final int workerExpLevelCostIncrecment = 3;
     private final int workerExpFoodCapacityIncrecmentPLevel = 2;
@@ -69,6 +75,17 @@ public class World {
 
     public int getWorkerLevel(){ return workerLevel; }
 
+    public boolean buyWorker(){
+        if(food<=workerCost){
+            ants.add(new Worker(nest.getPosition()));
+            food -= workerCost;
+            workerCost *= expWorkerCostIncrecment;
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void increaseWorkerLevel(){ workerLevel+= 1; workerFoodCapacity*= workerExpFoodCapacityIncrecmentPLevel; }
 
     public int getWidth(){ return width; }
@@ -76,6 +93,10 @@ public class World {
     public int getHeight(){ return  height; }
 
     public int getWorkerFoodCapacity(){ return workerFoodCapacity; }
+
+    public double getWorkerMovmentSpeed(){ return workerMovementSpeed; }
+
+    public double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
 
     public void setDimension(int width, int height){
         this.width = width;

@@ -62,6 +62,8 @@ public class GameView extends SurfaceView
     private Paint paintAnt = new Paint();
     private Paint foodDisplay = new Paint();
 
+    private Paint menu = new Paint();
+
 
     public GameView(Context context, World gameWorld, Typeface t) {
         super(context);
@@ -93,6 +95,9 @@ public class GameView extends SurfaceView
 
         foodDisplay.setTextSize(50);
         foodDisplay.setTypeface(t);
+
+        menu.setTextSize(60);
+
 
 
 
@@ -147,6 +152,8 @@ public class GameView extends SurfaceView
         }
 
         canvas.drawText("Food: "+gameWorld.getFood(), width-200, 100, foodDisplay);
+
+        //Draw Background + Menu Text if Menu is shown
 
 
 

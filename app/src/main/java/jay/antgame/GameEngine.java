@@ -45,6 +45,7 @@ public class GameEngine implements Runnable {
     public GameEngine(GameView gameView, World world) {
         this.world = world;
         this.gameView = gameView;
+        System.out.println(mischen(new String[]{"Apfel","Birne","Banane","Erdbeere","Rosinen","Pflaume"},0,""));
         world.setDimension(gameView.getWorldWidth(),gameView.getWorldHeight());
     }
 
@@ -106,6 +107,16 @@ public class GameEngine implements Runnable {
 
     public void click(Position p){
         System.out.println(p.getX()+ " , "+p.getY());
+    }
+
+    public String mischen(String[] zutaten, int aktZutat, String ergebnis){
+        if(aktZutat<zutaten.length){
+            aktZutat += 1;
+            ergebnis += zutaten[aktZutat];
+            return mischen(zutaten, aktZutat, ergebnis);
+        }else{
+            return "Obstsalat";
+        }
     }
 
 }

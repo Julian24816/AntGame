@@ -197,7 +197,7 @@ public class GameStorage extends SQLiteOpenHelper {
 
         List<FoodSource> sources = new LinkedList<>();
         sources.add(new FoodSource(new Position(200,100), 50));
-        sources.add(new FoodSource(new Position(-100,100), 50));
+        sources.add(new FoodSource(new Position(-600,300), 50));
         sources.add(new FoodSource(new Position(-200,-100), 50));
         sources.add(new FoodSource(new Position(100,-100), 50));
 

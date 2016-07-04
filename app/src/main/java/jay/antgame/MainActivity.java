@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity
     private GameEngine gameEngine;
     private GameStorage gameStorage;
 
-
     /**
      * initializes the App
      *
@@ -100,12 +99,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        if(gameEngine!=null) {
-            float x = event.getX();
-            float y = event.getY();
-            if(event.getAction()==MotionEvent.ACTION_DOWN)
-                gameEngine.click(gameView.getWorldPosition(x,y));
-        }
+
+        if(gameEngine!=null)
+            gameEngine.touchEvent(event);
+
         return false;
     }
 

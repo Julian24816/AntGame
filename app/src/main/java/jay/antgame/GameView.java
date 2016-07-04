@@ -7,10 +7,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
+import android.util.Size;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,10 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import jay.antgame.data.Ant;
 import jay.antgame.data.FoodSource;
+import jay.antgame.data.Nest;
 import jay.antgame.data.Position;
 import jay.antgame.data.ScentTrail;
 import jay.antgame.data.ScreenPosition;
+import jay.antgame.data.Worker;
 import jay.antgame.data.World;
+import jay.antgame.data.WorldObject;
 
 /**
  * Created by Julian on 09.06.2016.
@@ -40,6 +45,9 @@ public class GameView extends SurfaceView
 
     private final float density;
     private final int height, width;
+
+    private float xShifting = 0;
+    private float yShifting = 0;
 
     private ScheduledExecutorService executorService;
     private Runnable renderer = new Runnable() {
@@ -62,6 +70,9 @@ public class GameView extends SurfaceView
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
     private Paint paintAnt = new Paint();
+
+    private HashMap<Class, Paint> paints = new HashMap<>();
+    private HashMap<Class, Integer> sizes = new HashMap<>();
 
     private Paint text = new Paint();
     private int textSizeShopListItem= 60;
@@ -103,6 +114,14 @@ public class GameView extends SurfaceView
         paintAnt.setColor(Color.BLACK);
         paintAnt.setStyle(Paint.Style.FILL);
 
+        paints.put(Worker.class, paintAnt);
+        paints.put(Nest.class, paintNest);
+        paints.put(FoodSource.class, paintFoodSource);
+
+        sizes.put(Worker.class, ANT_SIZE);
+        sizes.put(Nest.class, NEST_SIZE);
+        sizes.put(FoodSource.class, FOOD_SOURCE_SIZE);
+
         text.setTypeface(t);
 
         menu.setColor(Color.GRAY);
@@ -122,8 +141,8 @@ public class GameView extends SurfaceView
 
     public Position getWorldPosition(float screenX, float screenY){
 
-        float x = -(width/2-screenX)/density/ZOOMFACTOR;
-        float y = (height/2-screenY)/density/ZOOMFACTOR;
+        float x = -(width/2-(screenX-xShifting))/density/ZOOMFACTOR;
+        float y = (height/2-(screenY-yShifting))/density/ZOOMFACTOR;
 
         return new Position(x,y);
     }
@@ -134,29 +153,10 @@ public class GameView extends SurfaceView
         // draw Background
         canvas.drawColor(Color.WHITE);
 
-        // draw Nest
-        Position nestPos = getScreenCoordinates(gameWorld.getNest().getPosition());
-        canvas.drawCircle(nestPos.getX(), nestPos.getY(), NEST_SIZE*density* ZOOMFACTOR /2, paintNest);
-
-        // draw FoodSources
-        for (FoodSource source: gameWorld.getFoodSources()) {
-            Position sourcePos = getScreenCoordinates(source.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), FOOD_SOURCE_SIZE*density* ZOOMFACTOR /2,
-                    paintFoodSource);
-        }
-
-        // draw ScentTrails
-        for (ScentTrail trail: gameWorld.getScentTrails()) {
-            Position sourcePos = getScreenCoordinates(trail.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), SCENT_TRAIL_SIZE*density* ZOOMFACTOR /2,
-                    paintScentTrail);
-        }
-
-        // draw FoodSources
-        for (Ant ant: gameWorld.getAnts()) {
-            Position sourcePos = getScreenCoordinates(ant.getPosition());
-            canvas.drawCircle(sourcePos.getX(), sourcePos.getY(), ANT_SIZE*density* ZOOMFACTOR /2,
-                    paintAnt);
+        for(WorldObject object: gameWorld.getWorldObjects()){
+            Position pos = getScreenCoordinates(object.getPosition());
+            canvas.drawCircle(xShifting+pos.getX(), yShifting+pos.getY(), sizes.get(object.getClass())*density* ZOOMFACTOR /2,
+                    paints.get(object.getClass()));
         }
 
         text.setTextSize(50);
@@ -169,18 +169,18 @@ public class GameView extends SurfaceView
             int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
             float shopBackgroundHeigth = gameWorld.getShopList().size() * itemHeight;
             ScreenPosition nestPosition = getScreenCoordinates(gameWorld.getNest().getPosition());
-            canvas.drawRect(nestPosition.getX() - shopBackgroundWidth / 2, nestPosition.getY() - shopBackgroundHeigth / 2,
-                    nestPosition.getX() + shopBackgroundWidth / 2, nestPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4, menu);
+            canvas.drawRect(nestPosition.getX() - shopBackgroundWidth / 2 +xShifting, nestPosition.getY() - shopBackgroundHeigth / 2 + yShifting,
+                    nestPosition.getX() + shopBackgroundWidth / 2 +xShifting, nestPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4 + yShifting, menu);
 
             List<String> lines = gameWorld.getShopList();
             for (int i = 0; i < lines.size(); i++) {
                 String[] parts = lines.get(i).split(":");
                 text.setTextSize(textSizeShopListItem);
-                canvas.drawText(parts[0]+" ("+gameWorld.getShopCosts()[i]+")", nestPosition.getX() - shopBackgroundWidth / 2 + 10,
-                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight, text);
+                canvas.drawText(parts[0]+" ("+gameWorld.getShopCosts()[i]+")", nestPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
+                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
                 text.setTextSize(textSizeShopItemDiscription);
-                canvas.drawText(parts[1], nestPosition.getX() - shopBackgroundWidth / 2 + 10,
-                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem, text);
+                canvas.drawText(parts[1], nestPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
+                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
             }
 
         }
@@ -194,6 +194,11 @@ public class GameView extends SurfaceView
 
 
 
+    }
+
+    public void addShifting(float x, float y){
+        xShifting += x;
+        yShifting += y;
     }
 
     public void writeTempText(String text){
@@ -227,5 +232,33 @@ public class GameView extends SurfaceView
     public int getWorldWidth(){ return width; }
 
     public int getWorldHeight(){ return height; }
+
+
+    //Js old drawing method
+    /*
+        // draw Nest
+        Position nestPos = getScreenCoordinates(gameWorld.getNest().getPosition());
+        canvas.drawCircle(xShifting+nestPos.getX(), yShifting+nestPos.getY(), NEST_SIZE*density* ZOOMFACTOR /2, paintNest);
+
+        // draw FoodSources
+        for (FoodSource source: gameWorld.getFoodSources()) {
+            Position sourcePos = getScreenCoordinates(source.getPosition());
+            canvas.drawCircle(xShifting+sourcePos.getX(), yShifting+sourcePos.getY(), FOOD_SOURCE_SIZE*density* ZOOMFACTOR /2,
+                    paintFoodSource);
+        }
+
+        // draw ScentTrails
+        for (ScentTrail trail: gameWorld.getScentTrails()) {
+            Position sourcePos = getScreenCoordinates(trail.getPosition());
+            canvas.drawCircle(xShifting+sourcePos.getX(), yShifting+sourcePos.getY(), SCENT_TRAIL_SIZE*density* ZOOMFACTOR /2,
+                    paintScentTrail);
+        }
+
+        // draw FoodSources
+        for (Ant ant: gameWorld.getAnts()) {
+            Position sourcePos = getScreenCoordinates(ant.getPosition());
+            canvas.drawCircle(xShifting+sourcePos.getX(), yShifting+sourcePos.getY(), ANT_SIZE*density* ZOOMFACTOR /2,
+                    paintAnt);
+        }*/
 
 }

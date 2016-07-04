@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class World {
 
+    private List<WorldObject> objects = new ArrayList<>();
     private List<Ant> ants;
     private List<FoodSource> foodSources;
     private List<ScentTrail> scentTrails;
@@ -39,6 +40,9 @@ public class World {
         foodSources = sources;
         scentTrails = trails;
         this.nest = nest;
+        objects.addAll(sources);
+        objects.add(nest);
+        objects.addAll(ants);
         food = 0;
         for(String s: shopList)
             shownShopList.add(s);
@@ -139,6 +143,8 @@ public class World {
     public boolean showShop(){ return showShop; }
 
     public void setShowShop(boolean show){ showShop= show; }
+
+    public List<WorldObject> getWorldObjects(){ return objects; }
 
     public void setDimension(int width, int height){
         this.width = width;

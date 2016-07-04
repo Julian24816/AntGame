@@ -3,6 +3,7 @@ package jay.antgame;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -44,6 +45,14 @@ public class GameEngine implements Runnable {
 
     private final int clickAcecptionRadius = 30;
 
+    //Zeit zu der der Finger das display berührt
+    private long timeDown = 0;
+    //zeit ab der ein druck als langer druck gezählt wird in nano sekunden
+    //                               M  k
+    private final int longTouch = 500000000;
+    private float downX,downY;
+    private float oldX,oldY;
+
     public GameEngine(GameView gameView, World world) {
         this.world = world;
         this.gameView = gameView;
@@ -70,6 +79,7 @@ public class GameEngine implements Runnable {
     public void run() {
 
         tickAnts();
+        checkLongTouch();
 
         // check for gameOver?
         // stop()
@@ -133,14 +143,68 @@ public class GameEngine implements Runnable {
         }
     }
 
-    public static boolean samePosition(Position position1, Position position2, double nearTargetVariable){
+    public static boolean samePosition(float x1, float y1, float x2, float y2, double nearTargetVariable){
 
-        boolean nearX = -nearTargetVariable<position2.getX()-position1.getX()&&position2.getX()-position1.getX()<nearTargetVariable;
-        boolean nearY = -nearTargetVariable<position2.getY()-position1.getY()&&position2.getY()-position1.getY()<nearTargetVariable;
+        boolean nearX = -nearTargetVariable<x2-x1&&x2-x1<nearTargetVariable;
+        boolean nearY = -nearTargetVariable<y2-y1&&y2-y1<nearTargetVariable;
         if(nearX&&nearY)
             return true;
         else
             return false;
+    }
+
+    public static boolean samePosition(Position position1, Position position2, double nearTargetVariable){
+
+       return samePosition(position1.getX(),position1.getY(),position2.getX(),position2.getY(), nearTargetVariable);
+
+    }
+
+    public void checkLongTouch(){
+        if(timeDown!=0){
+            long deltaTime = System.nanoTime()-timeDown;
+            //long Touch
+            if(deltaTime>longTouch){
+                timeDown = 0;
+            }
+        }
+
+    }
+
+    public void touchEvent(MotionEvent event){
+
+        if(event.getAction()==MotionEvent.ACTION_UP) {
+            long deltaTime = System.nanoTime()-timeDown;
+            timeDown = 0;
+
+            //Short Touch
+            if(deltaTime<longTouch){
+                click(gameView.getWorldPosition(event.getX(),event.getY()));
+            }
+
+        }else if(event.getAction()==MotionEvent.ACTION_DOWN) {
+            timeDown = System.nanoTime();
+            downX = oldX = event.getX();
+            downY = oldY = event.getY();
+        }else if(event.getAction()==MotionEvent.ACTION_MOVE){
+
+            //Bewegung
+            if(!samePosition(downX,downY,event.getX(),event.getY(),20)){
+                timeDown=0;
+
+                float dx = event.getX() - oldX;
+                float dy = event.getY() - oldY;
+
+                gameView.addShifting(dx,dy);
+
+                oldX = event.getX();
+                oldY = event.getY();
+            }
+        }
+
+                float x = event.getX();
+                float y = event.getY();
+                //if(event.getAction()==MotionEvent.ACTION_DOWN)
+                //gameEngine.click(gameView.getWorldPosition(x,y));
 
     }
 

@@ -12,7 +12,7 @@ public class Worker extends Ant {
 
     private final double randomRotation = 0.5;
     //Bereich an Ende der Map, ab welchem die Ameisen wieder umdrehen
-    private final int worldEndPuffer = 300;
+    private final int worldEndPuffer = 30;
     private final int abdrehWinkel = 2;
 
     public Worker(Position position) {

@@ -26,13 +26,23 @@ public class FoodSource implements WorldObject {
         throw new RuntimeException("currently changing the Nests Position isn't allowed");
     }
 
+    @Override
+    public void click(Position p) {
+
+    }
+
+    @Override
+    public String getSlectedText() {
+        return "Food Source  remainingFood: "+sourceFood;
+    }
+
     public void lowerFood(int f) {sourceFood=sourceFood - f;}
 
     public int getFood() {return sourceFood;}
 
     //Entferne wantedFood wenn genug da ist, sonst entferne alles was noch da ist
     public int removeFood(int wantedFood){
-        if(sourceFood<=wantedFood){
+        if(sourceFood>=wantedFood){
             sourceFood -= wantedFood;
             return  wantedFood;
         }else{

@@ -14,6 +14,8 @@ import jay.antgame.data.Ant;
 import jay.antgame.data.Position;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
+import jay.antgame.data.WorldObject;
+import jay.antgame.data.menus.Menu;
 
 /**
  * Created by Julian on 09.06.2016.
@@ -43,21 +45,20 @@ public class GameEngine implements Runnable {
     private int workerUpgradeCost = 10;
     private int workerCost = 1;
 
-    private final int clickAcecptionRadius = 30;
-
     //Zeit zu der der Finger das display berührt
     private long timeDown = 0;
     //zeit ab der ein druck als langer druck gezählt wird in nano sekunden
     //                               M  k
     private final int longTouch = 500000000;
+    private final int touchAccuracy = 30;
     private float downX,downY;
     private float oldX,oldY;
 
     public GameEngine(GameView gameView, World world) {
         this.world = world;
         this.gameView = gameView;
+        world.getMenuManager().setGameView(gameView);
         System.out.println(mischen(new String[]{"Apfel","Birne","Banane","Erdbeere","Rosinen","Pflaume"},0,""));
-        world.setDimension(gameView.getWorldWidth(),gameView.getWorldHeight());
     }
 
     public void start() {
@@ -114,23 +115,6 @@ public class GameEngine implements Runnable {
     private void tickAnts(){
         for(Ant ant: world.getAnts()){
             ant.tick(world);
-        }
-    }
-
-    public void click(Position p){
-        System.out.println(p.getX()+ " , "+p.getY());
-        float nestX = world.getNest().getPosition().getX();
-        float nestY = world.getNest().getPosition().getY();
-        if(!world.showShop()&&samePosition(p,world.getNest().getPosition(),clickAcecptionRadius)){
-            world.setShowShop(true);
-        }else if(world.showShop()&&(p.getX()<nestX-gameView.getShopWidth()/2||p.getX()>nestX+gameView.getShopWidth()/2
-                ||p.getY()<nestY-gameView.getShopHeight()/2||p.getY()>nestY+gameView.getShopHeight()/2)){
-            world.setShowShop(false);
-        }else if(world.showShop()){
-            int line = (int)( ( nestY+gameView.getShopHeight()/2-p.getY() ) / gameView.getShopItemHeight() );
-            //System.out.println(world.getShopList()[line]);
-            String answer = world.buy(world.getShopList().get(line));
-            gameView.writeTempText(answer);
         }
     }
 
@@ -206,6 +190,50 @@ public class GameEngine implements Runnable {
                 //if(event.getAction()==MotionEvent.ACTION_DOWN)
                 //gameEngine.click(gameView.getWorldPosition(x,y));
 
+    }
+
+    public void click(Position p){
+        /*
+        System.out.println(p.getX()+ " , "+p.getY());
+        float nestX = world.getNest().getPosition().getX();
+        float nestY = world.getNest().getPosition().getY();
+        if(!world.showShop()&&samePosition(p,world.getNest().getPosition(),clickAcecptionRadius)){
+            world.setShowShop(true);
+        }else if(world.showShop()&&(p.getX()<nestX-gameView.getShopWidth()/2||p.getX()>nestX+gameView.getShopWidth()/2
+                ||p.getY()<nestY-gameView.getShopHeight()/2||p.getY()>nestY+gameView.getShopHeight()/2)){
+            world.setShowShop(false);
+        }else if(world.showShop()){
+            int line = (int)( ( nestY+gameView.getShopHeight()/2-p.getY() ) / gameView.getShopItemHeight() );
+            //System.out.println(world.getShopList()[line]);
+            String answer = world.buy(world.getShopList().get(line));
+            gameView.writeTempText(answer);
+        }
+        */
+        boolean found = false;
+        for(WorldObject object: world.getWorldObjects()){
+
+            if(samePosition(p,object.getPosition(),touchAccuracy)){
+                found = true;
+                object.click(p);
+                world.setSelectedObject(object);
+
+                break;
+            }
+
+        }
+        for(Menu menu: world.getMenuManager().getAllMenus()){
+
+            if(menu.showList()&&menu.insideBounds(p,gameView)){
+                found = true;
+                menu.click(p);
+                world.setSelectedObject(menu);
+            }
+
+        }
+        if(!found) {
+            world.setSelectedObject(null);
+            world.getMenuManager().allMenusInvisible();
+        }
     }
 
 }

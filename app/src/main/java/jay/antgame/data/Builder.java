@@ -15,4 +15,14 @@ public class Builder extends Ant{
     public void tick(World world) {
 
     }
+
+    @Override
+    public void click(Position p) {
+
+    }
+
+    @Override
+    public String getSlectedText() {
+        return "Builder";
+    }
 }

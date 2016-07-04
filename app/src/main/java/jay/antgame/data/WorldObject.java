@@ -11,5 +11,8 @@ import jay.antgame.data.Position;
 public interface WorldObject {
     Position getPosition();
     void setPosition(Position pos);
+    void click(Position p);
+    String getSlectedText();
+    //boolean insideBounds(int touchAccuracyIfPoint);
     //TODO getImage
 }

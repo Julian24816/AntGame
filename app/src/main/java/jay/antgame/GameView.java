@@ -27,6 +27,8 @@ import jay.antgame.data.ScreenPosition;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 import jay.antgame.data.WorldObject;
+import jay.antgame.data.menus.Menu;
+import jay.antgame.data.menus.MenuManager;
 
 /**
  * Created by Julian on 09.06.2016.
@@ -44,10 +46,13 @@ public class GameView extends SurfaceView
     private static final int ANT_SIZE = 5;
 
     private final float density;
-    private final int height, width;
+    private final float screenWidth, screenHeight;
+    private int height, width;
 
     private float xShifting = 0;
     private float yShifting = 0;
+
+    private float left,top,right,bottom = 0;
 
     private ScheduledExecutorService executorService;
     private Runnable renderer = new Runnable() {
@@ -70,16 +75,17 @@ public class GameView extends SurfaceView
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
     private Paint paintAnt = new Paint();
+    private Paint paintGrass = new Paint();
 
     private HashMap<Class, Paint> paints = new HashMap<>();
     private HashMap<Class, Integer> sizes = new HashMap<>();
 
     private Paint text = new Paint();
-    private int textSizeShopListItem= 60;
-    private int textSizeShopItemDiscription= 40;
+    private static int textSizeShopListItem= 60;
+    private static int textSizeShopItemDiscription= 40;
 
-    private Paint menu = new Paint();
-    private float shopBackgroundWidth = 600;
+    private Paint paintMenu = new Paint();
+    private static float shopBackgroundWidth = 600;
 
     private int tempTextSize = 55;
     private String tempText = "";
@@ -91,11 +97,16 @@ public class GameView extends SurfaceView
 
         this.gameWorld = gameWorld;
 
+
         // get metrics
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         density = displayMetrics.density;
-        height = displayMetrics.heightPixels;
-        width = displayMetrics.widthPixels;
+        screenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
+        width = gameWorld.getWidth();
+        height = gameWorld.getHeight();
+        setGrassSize(width,height);
+        System.out.println(top+" "+left);
 
         // initialise Paint-Objects
         paintNest.setAntiAlias(true);
@@ -114,6 +125,8 @@ public class GameView extends SurfaceView
         paintAnt.setColor(Color.BLACK);
         paintAnt.setStyle(Paint.Style.FILL);
 
+        paintGrass.setColor(Color.rgb(188,245,169));
+
         paints.put(Worker.class, paintAnt);
         paints.put(Nest.class, paintNest);
         paints.put(FoodSource.class, paintFoodSource);
@@ -124,7 +137,7 @@ public class GameView extends SurfaceView
 
         text.setTypeface(t);
 
-        menu.setColor(Color.GRAY);
+        paintMenu.setColor(Color.GRAY);
 
 
 
@@ -151,7 +164,8 @@ public class GameView extends SurfaceView
     private void doDraw(Canvas canvas) {
 
         // draw Background
-        canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Color.rgb(188,235,169));
+        canvas.drawRect(left+xShifting,top+yShifting,right+xShifting,bottom+yShifting,paintGrass);
 
         for(WorldObject object: gameWorld.getWorldObjects()){
             Position pos = getScreenCoordinates(object.getPosition());
@@ -160,40 +174,57 @@ public class GameView extends SurfaceView
         }
 
         text.setTextSize(50);
-        canvas.drawText("Food: "+gameWorld.getFood(), width-200, 100, text);
+        canvas.drawText("Food: "+gameWorld.getFood(), screenWidth-200, 100, text);
 
-        //Draw Background + Menu Text if Menu is shown
-        if(gameWorld.showShop()) {
+        WorldObject selectedObject = gameWorld.getSelectedObject();
+        if(selectedObject!=null){
+            canvas.drawText(selectedObject.getSlectedText(), 100, 100, text);
+        }
 
-            text.setTextSize(textSizeShopListItem);
-            int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
-            float shopBackgroundHeigth = gameWorld.getShopList().size() * itemHeight;
-            ScreenPosition nestPosition = getScreenCoordinates(gameWorld.getNest().getPosition());
-            canvas.drawRect(nestPosition.getX() - shopBackgroundWidth / 2 +xShifting, nestPosition.getY() - shopBackgroundHeigth / 2 + yShifting,
-                    nestPosition.getX() + shopBackgroundWidth / 2 +xShifting, nestPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4 + yShifting, menu);
+        //Draw all menus
+        for(Menu menu: gameWorld.getMenuManager().getAllMenus()){
+            if(menu.showList()){
 
-            List<String> lines = gameWorld.getShopList();
-            for (int i = 0; i < lines.size(); i++) {
-                String[] parts = lines.get(i).split(":");
                 text.setTextSize(textSizeShopListItem);
-                canvas.drawText(parts[0]+" ("+gameWorld.getShopCosts()[i]+")", nestPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
-                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
-                text.setTextSize(textSizeShopItemDiscription);
-                canvas.drawText(parts[1], nestPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
-                        nestPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
-            }
+                int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
+                float shopBackgroundHeigth = menu.getList().size() * itemHeight;
+                ScreenPosition menuPosition = getScreenCoordinates(menu.getPosition());
+                canvas.drawRect(menuPosition.getX() - shopBackgroundWidth / 2 +xShifting, menuPosition.getY() - shopBackgroundHeigth / 2 + yShifting,
+                        menuPosition.getX() + shopBackgroundWidth / 2 +xShifting, menuPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4 + yShifting, paintMenu);
 
+                List<String> lines = menu.getList();
+                for (int i = 0; i < lines.size(); i++) {
+                    String[] parts = lines.get(i).split(":");
+                    text.setTextSize(textSizeShopListItem);
+                    canvas.drawText(parts[0]+" ("+menu.getCosts().get(i)+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
+                            menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
+                    text.setTextSize(textSizeShopItemDiscription);
+                    canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
+                            menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
+                }
+            }
         }
 
         if(tempTextTime>0){
             text.setTextSize(tempTextSize);
-            canvas.drawText(tempText, 100 ,height-height/6, text);
+            canvas.drawText(tempText, 100 ,screenHeight-screenHeight/10, text);
             tempTextTime--;
         }
 
 
 
 
+    }
+
+    public void setGrassSize(int width, int height){
+        Position topLeft = new Position(-width/2,height/2);
+        Position bottomRight = new Position(width/2,-height/2);
+        ScreenPosition screenTopLeft = getScreenCoordinates(topLeft);
+        ScreenPosition screenBottomRight = getScreenCoordinates(bottomRight);
+        top = screenTopLeft.getY();
+        left = screenTopLeft.getX();
+        right = screenBottomRight.getX();
+        bottom = screenBottomRight.getY();
     }
 
     public void addShifting(float x, float y){
@@ -206,13 +237,13 @@ public class GameView extends SurfaceView
         tempTextTime = TEMPTEXTTIMESHOWN;
     }
 
-    public int getShopItemHeight(){ return textSizeShopListItem + textSizeShopItemDiscription; }
+    public static int getMenuItemHeight(){ return textSizeShopListItem + textSizeShopItemDiscription; }
 
-    public float getShopHeight(){
-        return gameWorld.getShopList().size() * (textSizeShopListItem + textSizeShopItemDiscription);
+    public static float getMenuHeight(Menu menu){
+        return menu.getList().size() * (textSizeShopListItem + textSizeShopItemDiscription);
     }
 
-    public float getShopWidth(){ return shopBackgroundWidth; }
+    public static float getMenuWidth(){ return shopBackgroundWidth; }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

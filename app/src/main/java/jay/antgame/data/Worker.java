@@ -85,4 +85,13 @@ public class Worker extends Ant {
         antFood = f;
     }
 
+    @Override
+    public void click(Position p) {
+
+    }
+
+    @Override
+    public String getSlectedText() {
+        return "Worker foodCarring: "+antFood;
+    }
 }

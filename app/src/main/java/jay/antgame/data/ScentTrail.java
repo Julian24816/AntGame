@@ -26,6 +26,16 @@ public class ScentTrail implements WorldObject {
         throw new RuntimeException("currently changing the Nests Position isn't allowed");
     }
 
+    @Override
+    public void click(Position p) {
+
+    }
+
+    @Override
+    public String getSlectedText() {
+        return null;
+    }
+
     public Position getTarget(){
         return target;
     }

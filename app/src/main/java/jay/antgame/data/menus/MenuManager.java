@@ -51,13 +51,19 @@ public class MenuManager {
     public String buyWorker(int id){
 
         if(world.getNest().getFood()>=nestMenu.getCosts()[id]){
-            world.addAnt();
+            world.addWorker();
             world.getNest().addFoodAmount(-nestMenu.getCosts()[id]);
             nestMenu.getCosts()[id] *= Worker.getExtCostIncrecment();
             return "One Worker spawned";
         }else{
             return "You need "+(nestMenu.getCosts()[id]-world.getFood())+" more Food";
         }
+
+    }
+
+    public String buyAnt(int id){
+
+        return "";
 
     }
 

@@ -77,9 +77,9 @@ public class World {
 
     public void setSelectedObject(WorldObject object){ selectedObject = object; }
 
-    public void addAnt(Position p){ ants.add(new Worker(p)); }
+    public void addWorker(Position p){ ants.add(new Worker(p)); }
 
-    public void addAnt(){ addAnt(nest.getPosition().clone()); }
+    public void addWorker(){ addWorker(nest.getPosition().clone()); }
 
     public void setDimension(int width, int height){
         this.width = width;

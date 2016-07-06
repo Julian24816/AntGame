@@ -15,7 +15,6 @@ public class World {
     private List<FoodSource> foodSources;
     private List<ScentTrail> scentTrails;
     private Nest nest;
-    private int food;
 
     private int width = 2000;
     private int height = 1000;
@@ -48,7 +47,6 @@ public class World {
         objects.addAll(sources);
         objects.add(nest);
         objects.addAll(ants);
-        food = 0;
         for(String s: shopList)
             shownShopList.add(s);
     }
@@ -80,11 +78,11 @@ public class World {
     }
 
     public int getFood() {
-        return food;
+        return nest.getFood();
     }
 
     public void addFood(int f) {
-        food = food + f;
+        nest.addFoodAmount(f);
     }
 
     public void addAnt(Ant ant){ ants.add(ant); }

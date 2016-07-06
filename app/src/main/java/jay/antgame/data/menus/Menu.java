@@ -5,8 +5,6 @@ import java.util.List;
 
 import jay.antgame.GameView;
 import jay.antgame.data.Position;
-import jay.antgame.data.Worker;
-import jay.antgame.data.World;
 import jay.antgame.data.WorldObject;
 
 /**
@@ -52,7 +50,7 @@ public class Menu implements WorldObject{
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return name+" Menu";
     }
 

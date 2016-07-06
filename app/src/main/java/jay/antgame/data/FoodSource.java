@@ -5,15 +5,17 @@ package jay.antgame.data;
  */
 public class FoodSource implements WorldObject {
 
-    private int sourceFood;
+    private int sourceFood, maxFood;
     private Position pos;
 
     public FoodSource (Position pos, int startFood) {
         this.pos = pos;
-        sourceFood = startFood;
+        maxFood = sourceFood = startFood;
     }
 
-    //TODO implement methods
+    public int getMaxFood() {
+        return maxFood;
+    }
 
     @Override
     public Position getPosition() {
@@ -32,7 +34,7 @@ public class FoodSource implements WorldObject {
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return "Food Source  remainingFood: "+sourceFood;
     }
 

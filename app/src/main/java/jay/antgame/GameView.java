@@ -232,8 +232,10 @@ public class GameView extends SurfaceView
     }
 
     public void addShifting(float x, float y){
-        xShifting += x;
-        yShifting += y;
+        if(xShifting<width&&xShifting>-width)
+            xShifting += x;
+        if(yShifting<height&&yShifting>-height)
+            yShifting += y;
     }
 
     public void writeTempText(String text){

@@ -62,6 +62,8 @@ public class Menu implements WorldObject{
 
     public List<Integer> getCosts(){ return shownCosts; }
 
+    public int[] getAllCosts(){ return costs; }
+
     public List<String> getList(){ return shownList; }
 
     public boolean showList(){ return show; }

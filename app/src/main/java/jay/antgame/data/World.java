@@ -25,10 +25,7 @@ public class World {
     private int workerLevel = 1;
     private int workerFoodCapacity = 1;
 
-    private double workerMovementSpeed = 3;
     private double workerNearFoodVariable = 20;
-
-    private int expWorkerCostIncrecment = 2;
 
     private int workerLevelCost = 10;
     private final int workerExpLevelCostIncrecment = 3;
@@ -94,18 +91,6 @@ public class World {
 
     public int getWorkerLevel(){ return workerLevel; }
 
-    public String buyWorker(){
-        if(food>=shopCosts[0]){
-            ants.add(new Worker(nest.getPosition().clone()));
-            food -= shopCosts[0];
-            shopCosts[0] *= expWorkerCostIncrecment;
-            //aktShopList(shopList[0],"Buy Worker ("+workerCost+"):Spawn 1 working ant");
-            return "One Worker spawned";
-        }else{
-            return "You need "+(shopCosts[0]-food)+" more Food";
-        }
-    }
-
     public void aktShopList(String old, String newS){
         for(int i=0;i<shopList.length;i++){
             if(i<shownShopList.size()){
@@ -117,21 +102,6 @@ public class World {
         }
     }
 
-    public String buy(String order){
-        int id = 0;
-        for(int i=0;i<shopList.length;i++){
-            if(shopList[i].equals(order)){
-                id = i;
-                break;
-            }
-        }
-        switch (id) {
-            case 0:
-                return buyWorker();
-        }
-        return "";
-    }
-
     public void increaseWorkerLevel(){ workerLevel+= 1; workerFoodCapacity*= workerExpFoodCapacityIncrecmentPLevel; }
 
     public int getWidth(){ return width; }
@@ -139,8 +109,6 @@ public class World {
     public int getHeight(){ return  height; }
 
     public int getWorkerFoodCapacity(){ return workerFoodCapacity; }
-
-    public double getWorkerMovmentSpeed(){ return workerMovementSpeed; }
 
     public double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
 
@@ -159,6 +127,10 @@ public class World {
     public void setSelectedObject(WorldObject object){ selectedObject = object; }
 
     public MenuManager getMenuManager(){ return menuManager; }
+
+    public void addAnt(Position p){ ants.add(new Worker(p)); }
+
+    public void addAnt(){ addAnt(nest.getPosition().clone()); }
 
     public void setDimension(int width, int height){
         this.width = width;

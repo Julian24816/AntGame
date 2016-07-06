@@ -37,6 +37,7 @@ public class GameEngine implements Runnable {
  */
 
     private GameView gameView;
+    private TouchHandling touchHandling;
     private World world;
 
     private final int expWorkerCostsImcrecment = 2;
@@ -45,18 +46,11 @@ public class GameEngine implements Runnable {
     private int workerUpgradeCost = 10;
     private int workerCost = 1;
 
-    //Zeit zu der der Finger das display berührt
-    private long timeDown = 0;
-    //zeit ab der ein druck als langer druck gezählt wird in nano sekunden
-    //                               M  k
-    private final int longTouch = 500000000;
-    private final int touchAccuracy = 30;
-    private float downX,downY;
-    private float oldX,oldY;
 
-    public GameEngine(GameView gameView, World world) {
+    public GameEngine(GameView gameView, World world, TouchHandling touchHandling) {
         this.world = world;
         this.gameView = gameView;
+        this.touchHandling = touchHandling;
         world.getMenuManager().setGameView(gameView);
         System.out.println(mischen(new String[]{"Apfel","Birne","Banane","Erdbeere","Rosinen","Pflaume"},0,""));
     }
@@ -80,36 +74,10 @@ public class GameEngine implements Runnable {
     public void run() {
 
         tickAnts();
-        checkLongTouch();
+        touchHandling.checkLongTouch();
 
         // check for gameOver?
         // stop()
-    }
-
-    public boolean buyWorker(){
-        if(world.getFood()>=workerCost){
-            world.addAnt(new Worker(world.getNest().getPosition()));
-            world.addFood(-workerCost);
-            workerCost *= expWorkerCostsImcrecment;
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public boolean upgradeWorker(){
-        if(world.getFood()>=workerUpgradeCost){
-            world.increaseWorkerLevel();
-            world.addFood(-workerUpgradeCost);
-            workerUpgradeCost *= expWorkerLevelCostIncrecment;
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public int getWorkerCost(){
-        return workerCost;
     }
 
     private void tickAnts(){
@@ -118,121 +86,19 @@ public class GameEngine implements Runnable {
         }
     }
 
-    public String mischen(String[] zutaten, int aktZutat, String ergebnis){
-        if(aktZutat<zutaten.length){
-            ergebnis += " "+zutaten[aktZutat];
-            return mischen(zutaten, aktZutat+1, ergebnis);
+    /**
+     * creates a mix of all ingredients
+     * @param ingredients List of ingredients being mixed
+     * @param aktZutat position of the string which gets thowen in the mixer next
+     * @param ergebnis current state of the mix
+     * @return returns a mix of all ingredients
+     */
+    public String mischen(String[] ingredients, int aktZutat, String ergebnis){
+        if(aktZutat<ingredients.length){
+            ergebnis += " "+ingredients[aktZutat];
+            return mischen(ingredients, aktZutat+1, ergebnis);
         }else{
             return "Obstsalat =" + ergebnis;
-        }
-    }
-
-    public static boolean samePosition(float x1, float y1, float x2, float y2, double nearTargetVariable){
-
-        boolean nearX = -nearTargetVariable<x2-x1&&x2-x1<nearTargetVariable;
-        boolean nearY = -nearTargetVariable<y2-y1&&y2-y1<nearTargetVariable;
-        if(nearX&&nearY)
-            return true;
-        else
-            return false;
-    }
-
-    public static boolean samePosition(Position position1, Position position2, double nearTargetVariable){
-
-       return samePosition(position1.getX(),position1.getY(),position2.getX(),position2.getY(), nearTargetVariable);
-
-    }
-
-    public void checkLongTouch(){
-        if(timeDown!=0){
-            long deltaTime = System.nanoTime()-timeDown;
-            //long Touch
-            if(deltaTime>longTouch){
-                timeDown = 0;
-            }
-        }
-
-    }
-
-    public void touchEvent(MotionEvent event){
-
-        if(event.getAction()==MotionEvent.ACTION_UP) {
-            long deltaTime = System.nanoTime()-timeDown;
-            timeDown = 0;
-
-            //Short Touch
-            if(deltaTime<longTouch){
-                click(gameView.getWorldPosition(event.getX(),event.getY()));
-            }
-
-        }else if(event.getAction()==MotionEvent.ACTION_DOWN) {
-            timeDown = System.nanoTime();
-            downX = oldX = event.getX();
-            downY = oldY = event.getY();
-        }else if(event.getAction()==MotionEvent.ACTION_MOVE){
-
-            //Bewegung
-            if(!samePosition(downX,downY,event.getX(),event.getY(),20)){
-                timeDown=0;
-
-                float dx = event.getX() - oldX;
-                float dy = event.getY() - oldY;
-
-                gameView.addShifting(dx,dy);
-
-                oldX = event.getX();
-                oldY = event.getY();
-            }
-        }
-
-        float x = event.getX();
-        float y = event.getY();
-                //if(event.getAction()==MotionEvent.ACTION_DOWN)
-                //gameEngine.click(gameView.getWorldPosition(x,y));
-
-    }
-
-    public void click(Position p){
-        /*
-        System.out.println(p.getX()+ " , "+p.getY());
-        float nestX = world.getNest().getPosition().getX();
-        float nestY = world.getNest().getPosition().getY();
-        if(!world.showShop()&&samePosition(p,world.getNest().getPosition(),clickAcecptionRadius)){
-            world.setShowShop(true);
-        }else if(world.showShop()&&(p.getX()<nestX-gameView.getShopWidth()/2||p.getX()>nestX+gameView.getShopWidth()/2
-                ||p.getY()<nestY-gameView.getShopHeight()/2||p.getY()>nestY+gameView.getShopHeight()/2)){
-            world.setShowShop(false);
-        }else if(world.showShop()){
-            int line = (int)( ( nestY+gameView.getShopHeight()/2-p.getY() ) / gameView.getShopItemHeight() );
-            //System.out.println(world.getShopList()[line]);
-            String answer = world.buy(world.getShopList().get(line));
-            gameView.writeTempText(answer);
-        }
-        */
-        boolean found = false;
-        for(WorldObject object: world.getWorldObjects()){
-
-            if(samePosition(p,object.getPosition(),touchAccuracy)){
-                found = true;
-                object.click(p);
-                world.setSelectedObject(object);
-
-                break;
-            }
-
-        }
-        for(Menu menu: world.getMenuManager().getAllMenus()){
-
-            if(menu.showList()&&menu.insideBounds(p,gameView)){
-                found = true;
-                menu.click(p);
-                world.setSelectedObject(menu);
-            }
-
-        }
-        if(!found) {
-            world.setSelectedObject(null);
-            world.getMenuManager().allMenusInvisible();
         }
     }
 

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity
     private GameView gameView;
     private GameEngine gameEngine;
     private GameStorage gameStorage;
+    private TouchHandling touchHandling;
 
     /**
      * initializes the App
@@ -157,8 +158,11 @@ public class MainActivity extends AppCompatActivity
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
+        //create TouchHandling
+        touchHandling = new TouchHandling(gameView);
+
         // create GameEngine and start it
-        gameEngine = new GameEngine(gameView, world);
+        gameEngine = new GameEngine(gameView, world, touchHandling);
         gameEngine.start();
     }
 

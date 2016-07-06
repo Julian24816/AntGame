@@ -91,6 +91,7 @@ public class World {
 
     public int getWorkerLevel(){ return workerLevel; }
 
+    /*
     public void aktShopList(String old, String newS){
         for(int i=0;i<shopList.length;i++){
             if(i<shownShopList.size()){
@@ -100,7 +101,7 @@ public class World {
             if(shopList[i].equals(old))
                 shopList[i] = newS;
         }
-    }
+    }*/
 
     public void increaseWorkerLevel(){ workerLevel+= 1; workerFoodCapacity*= workerExpFoodCapacityIncrecmentPLevel; }
 

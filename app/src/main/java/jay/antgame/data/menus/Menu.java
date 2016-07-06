@@ -5,6 +5,7 @@ import java.util.List;
 
 import jay.antgame.GameView;
 import jay.antgame.data.Position;
+import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 import jay.antgame.data.WorldObject;
 
@@ -58,6 +59,11 @@ public class Menu implements WorldObject{
     public boolean insideBounds(Position pos, GameView gameView){
         return ( pos.getX()>(position.getX()-gameView.getMenuWidth()/2)&& pos.getX()< (position.getX()+gameView.getMenuWidth()/2) &&
                     pos.getY()>position.getY()-gameView.getMenuHeight(this)/2 && pos.getY()<position.getY()+gameView.getMenuHeight(this)/2 );
+    }
+
+    public void updateCost(int arrayID, int newCosts){
+        costs[arrayID] = newCosts;
+        //shownCosts.set(listID, newCosts );
     }
 
     public List<Integer> getCosts(){ return shownCosts; }

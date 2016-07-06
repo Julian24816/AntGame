@@ -32,7 +32,7 @@ public class ScentTrail implements WorldObject {
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return null;
     }
 

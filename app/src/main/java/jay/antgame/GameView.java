@@ -4,11 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
-import android.util.Size;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -18,17 +15,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import jay.antgame.data.Ant;
 import jay.antgame.data.FoodSource;
 import jay.antgame.data.Nest;
 import jay.antgame.data.Position;
-import jay.antgame.data.ScentTrail;
 import jay.antgame.data.ScreenPosition;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 import jay.antgame.data.WorldObject;
 import jay.antgame.data.menus.Menu;
-import jay.antgame.data.menus.MenuManager;
 
 /**
  * Created by Julian on 09.06.2016.
@@ -184,7 +178,7 @@ public class GameView extends SurfaceView
 
         WorldObject selectedObject = gameWorld.getSelectedObject();
         if(selectedObject!=null){
-            canvas.drawText(selectedObject.getSlectedText(), 100, 100, text);
+            canvas.drawText(selectedObject.getSelectedText(), 100, 100, text);
         }
 
         //Draw all menus

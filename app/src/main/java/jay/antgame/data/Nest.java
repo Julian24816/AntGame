@@ -39,7 +39,7 @@ public class Nest implements WorldObject {
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return "Nest";
     }
 

@@ -22,7 +22,7 @@ public class Builder extends Ant{
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return "Builder";
     }
 }

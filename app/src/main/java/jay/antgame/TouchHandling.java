@@ -10,6 +10,8 @@ import jay.antgame.data.menus.MenuManager;
 
 /**
  * Created by Yannick.Pfeiffer on 06.07.2016.
+ *
+ * @author Yannick
  */
 
 public class TouchHandling {

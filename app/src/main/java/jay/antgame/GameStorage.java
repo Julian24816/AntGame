@@ -26,7 +26,7 @@ import jay.antgame.data.World;
 public class GameStorage extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "antgame";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // reused constants for database tables
     private static final String POS_X = "posX";
@@ -64,7 +64,9 @@ public class GameStorage extends SQLiteOpenHelper {
     private static final String SCENT_TRAIL_REMAINING_LIFE_TIME = "liveTime";
     private static final String CREATE_TABLE_SCENTTRAILS
             = "create table " + TABLE_SCENT_TRAILS + " (" + POS_X + " real, " + POS_Y + " real, "
+            + TARGET_POS_X + " real, " + TARGET_POS_Y + " real, "
             + SCENT_TRAIL_REMAINING_LIFE_TIME + " integer, " + SAVE_ID + " integer)";
+
 
 
     /**
@@ -75,6 +77,7 @@ public class GameStorage extends SQLiteOpenHelper {
     public GameStorage(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
 
     /**
      * creates the database tables.
@@ -97,6 +100,7 @@ public class GameStorage extends SQLiteOpenHelper {
         }
     }
 
+
     /**
      * alters the database to fit the new version
      *
@@ -113,6 +117,12 @@ public class GameStorage extends SQLiteOpenHelper {
 
     }
 
+
+    /**
+     * retrieves the saveIds of all available Worlds
+     *
+     * @return Array of saveIds
+     */
     public Integer[] getAvailableWorlds() {
         List<Integer> list = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -125,26 +135,66 @@ public class GameStorage extends SQLiteOpenHelper {
         return (Integer[]) list.toArray();
     }
 
-    /*    public void saveWorld(World world) {
-            // get next saveId
-            int saveId = 0;
-            SQLiteDatabase db = getReadableDatabase();
-            Cursor res = db.rawQuery("select max("+ SAVE_ID + ") from " + TABLE_NEST, null);
-            if (res.moveToNext()) {
-                saveId = res.getInt(0);
-            }
-            if (saveId == 0) throw new RuntimeException("no saved world present");
-            saveWorld(world, saveId);
-        }
 
-        public void saveWorld(World world, int saveId) {
-            for (Ant ant: world.getAnts()) saveAnt(ant, saveId);
-            for (FoodSource foodSource: world.getFoodSources()) saveFoodSource(foodSource, saveId);
-            for (ScentTrail scentTrail: world.getScentTrails()) saveScentTrail(scentTrail, saveId);
-            saveNest(world.getNest(), saveId);
-        }
-    */
+    /**
+     * saves the World to the database by first calculating the next saveId and then calling the
+     * itself with the additional parameter
+     *
+     * @param world the World, that will be saved
+     */
+    public void saveWorld(World world) {
+        // get next saveId
+        int saveId = 0;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery("select max("+ SAVE_ID + ") from " + TABLE_NEST, null);
+        if (res.moveToNext())
+            saveId = res.getInt(0);
+//        if (saveId == 0) throw new RuntimeException("no previous saved world present");
+        saveWorld(world, saveId);
+    }
 
+
+    /**
+     * saves the World to the database
+     *
+     * @param world the World object to be saved
+     * @param saveId the saveId to be used to identify all World-Components
+     */
+    public void saveWorld(World world, int saveId) {
+        for (Ant ant: world.getAnts()) saveAnt(ant, saveId);
+        for (FoodSource foodSource: world.getFoodSources()) saveFoodSource(foodSource, saveId);
+        for (ScentTrail scentTrail: world.getScentTrails()) saveScentTrail(scentTrail, saveId);
+        saveNest(world.getNest(), saveId);
+    }
+
+
+    /**
+     * saves a Nest to the Database
+     *
+     * @param nest the nest object to be saved
+     * @param saveId the saveId to be used
+     */
+    private void saveNest(Nest nest, int saveId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(POS_X, nest.getPosition().getX());
+        values.put(POS_Y, nest.getPosition().getY());
+        values.put(FOOD_AMOUNT, nest.getFood());
+        values.put(SAVE_ID, saveId);
+
+        db.insert(TABLE_NEST, null, values);
+        db.close();
+    }
+
+
+
+    /**
+     * saves an Ant to the Database
+     *
+     * @param ant the ant object to be saved
+     * @param saveId the saveId to be used
+     */
     private void saveAnt(Ant ant, int saveId) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -162,6 +212,57 @@ public class GameStorage extends SQLiteOpenHelper {
         db.close();
     }
 
+
+    /**
+     * saves a FoodSource to the Database
+     *
+     * @param foodSource the foodSource object to be saved
+     * @param saveId the saveId to be used
+     */
+    private void saveFoodSource(FoodSource foodSource, int saveId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(POS_X, foodSource.getPosition().getX());
+        values.put(POS_Y, foodSource.getPosition().getY());
+        values.put(FOOD_AMOUNT, foodSource.getFood());
+        values.put(FOOD_SOURCE_MAX_FOOD_AMOUNT, foodSource.getMaxFood());
+        values.put(SAVE_ID, saveId);
+
+        db.insert(TABLE_FOOD_SOURCES, null, values);
+        db.close();
+    }
+
+
+    /**
+     * saves a ScentTrail to the Database
+     *
+     * @param scentTrail the scentTrail object to be saved
+     * @param saveId the saveId to be used
+     */
+    private void saveScentTrail(ScentTrail scentTrail, int saveId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(POS_X, scentTrail.getPosition().getX());
+        values.put(POS_Y, scentTrail.getPosition().getY());
+        values.put(TARGET_POS_X, scentTrail.getTarget().getX());
+        values.put(TARGET_POS_Y, scentTrail.getTarget().getY());
+        values.put(SCENT_TRAIL_REMAINING_LIFE_TIME, scentTrail.getRemainingLifetime());
+        values.put(SAVE_ID, saveId);
+
+        db.insert(TABLE_SCENT_TRAILS, null, values);
+        db.close();
+    }
+
+
+
+    /**
+     * loads a World from the Database
+     *
+     * @param saveId the saveId all world components are identified by
+     * @return a new World object corresponding to the saveId
+     */
     public World getWorld(int saveId) {
         //TODO assert that a save with saveId exists
         Nest nest = getNest(saveId);
@@ -171,6 +272,13 @@ public class GameStorage extends SQLiteOpenHelper {
         return new World(ants, sources, trails, nest);
     }
 
+
+    /**
+     * loads the scentTrails of a World
+     *
+     * @param saveId the saveId the scentTrails are identified by
+     * @return a list of all the scentTrails
+     */
     private List<ScentTrail> getScentTrails(int saveId) {
         List<ScentTrail> scentTrails = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -188,6 +296,13 @@ public class GameStorage extends SQLiteOpenHelper {
         return scentTrails;
     }
 
+
+    /**
+     * loads the foodSources of a World
+     *
+     * @param saveId the saveId the foodSources are identified by
+     * @return a list of all the foodSources
+     */
     private List<FoodSource> getFoodSources(int saveId) {
         List<FoodSource> foodSources = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -205,6 +320,13 @@ public class GameStorage extends SQLiteOpenHelper {
         return foodSources;
     }
 
+
+    /**
+     * loads the ants of a World
+     *
+     * @param saveId the saveId the ants are identified by
+     * @return a list of all the ants
+     */
     private List<Ant> getAnts(int saveId) {
         List<Ant> ants = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -222,6 +344,13 @@ public class GameStorage extends SQLiteOpenHelper {
         return ants;
     }
 
+
+    /**
+     * loads the Nest of a World
+     *
+     * @param saveId the saveId the nest is identified by
+     * @return a Nest Object
+     */
     private Nest getNest(int saveId) {
         Nest nest = null;
         SQLiteDatabase db = getReadableDatabase();
@@ -237,9 +366,15 @@ public class GameStorage extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * creates a default World
+     *
+     * @return the new World Object
+     */
     public World getNewWorld() {
 
         Nest nest = new Nest(new Position(0,0));
+        nest.addFoodAmount(20);
 
         List<Ant> ants = new LinkedList<>();
         for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));
@@ -251,10 +386,6 @@ public class GameStorage extends SQLiteOpenHelper {
         sources.add(new FoodSource(new Position(-200,-100), 50));
         sources.add(new FoodSource(new Position(100,-100), 50));
 
-        nest.addFoodAmount(20);
-
-        List<ScentTrail> trails = new LinkedList<>();
-
-        return new World(ants, sources, trails, nest);
+        return new World(ants, sources, new LinkedList<ScentTrail>(), nest);
     }
 }

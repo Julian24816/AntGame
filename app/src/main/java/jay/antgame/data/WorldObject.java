@@ -12,7 +12,7 @@ public interface WorldObject {
     Position getPosition();
     void setPosition(Position pos);
     void click(Position p);
-    String getSlectedText();
+    String getSelectedText();
     //boolean insideBounds(int touchAccuracyIfPoint);
     //TODO getImage
 }

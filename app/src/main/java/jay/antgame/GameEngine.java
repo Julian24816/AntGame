@@ -22,7 +22,7 @@ import jay.antgame.data.menus.Menu;
  */
 public class GameEngine implements Runnable {
 
-    private static final long MS_PER_FRAME = 50;
+    private static final long MS_PER_FRAME = 40;
     private ScheduledExecutorService executorService;
 /* currently unused
     private Handler handler = new Handler();

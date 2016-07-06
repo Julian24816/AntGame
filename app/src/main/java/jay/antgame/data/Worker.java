@@ -100,7 +100,7 @@ public class Worker extends Ant {
     }
 
     @Override
-    public String getSlectedText() {
+    public String getSelectedText() {
         return "Worker foodCarring: "+antFood;
     }
 

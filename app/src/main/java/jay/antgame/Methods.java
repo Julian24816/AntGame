@@ -4,6 +4,8 @@ import jay.antgame.data.Position;
 
 /**
  * Created by Yannick.Pfeiffer on 06.07.2016.
+ *
+ * @author Yannick
  */
 
 public class Methods {

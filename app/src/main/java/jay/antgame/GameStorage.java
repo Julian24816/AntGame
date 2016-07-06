@@ -1,5 +1,6 @@
 package jay.antgame;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -112,6 +113,55 @@ public class GameStorage extends SQLiteOpenHelper {
 
     }
 
+    public Integer[] getAvailableWorlds() {
+        List<Integer> list = new LinkedList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery("select " + SAVE_ID + " from " + TABLE_NEST,null);
+        while (res.moveToNext()) {
+            list.add(res.getInt(0));
+        }
+        res.close();
+        db.close();
+        return (Integer[]) list.toArray();
+    }
+
+    /*    public void saveWorld(World world) {
+            // get next saveId
+            int saveId = 0;
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor res = db.rawQuery("select max("+ SAVE_ID + ") from " + TABLE_NEST, null);
+            if (res.moveToNext()) {
+                saveId = res.getInt(0);
+            }
+            if (saveId == 0) throw new RuntimeException("no saved world present");
+            saveWorld(world, saveId);
+        }
+
+        public void saveWorld(World world, int saveId) {
+            for (Ant ant: world.getAnts()) saveAnt(ant, saveId);
+            for (FoodSource foodSource: world.getFoodSources()) saveFoodSource(foodSource, saveId);
+            for (ScentTrail scentTrail: world.getScentTrails()) saveScentTrail(scentTrail, saveId);
+            saveNest(world.getNest(), saveId);
+        }
+    */
+
+    private void saveAnt(Ant ant, int saveId) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(POS_X, ant.getPosition().getX());
+        values.put(POS_Y, ant.getPosition().getY());
+        values.put(FOOD_AMOUNT, ((Worker)ant).getFood()); //todo different ant types
+        values.put(SAVE_ID, saveId);
+        if (ant.hasTarget()) {
+            values.put(TARGET_POS_X, ant.getTargetPosition().getX());
+            values.put(TARGET_POS_Y, ant.getTargetPosition().getY());
+        }
+
+        db.insert(TABLE_ANTS, null, values);
+        db.close();
+    }
+
     public World getWorld(int saveId) {
         //TODO assert that a save with saveId exists
         Nest nest = getNest(saveId);
@@ -201,6 +251,7 @@ public class GameStorage extends SQLiteOpenHelper {
         sources.add(new FoodSource(new Position(-200,-100), 50));
         sources.add(new FoodSource(new Position(100,-100), 50));
 
+        nest.addFoodAmount(20);
 
         List<ScentTrail> trails = new LinkedList<>();
 

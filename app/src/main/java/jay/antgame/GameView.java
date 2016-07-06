@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import jay.antgame.data.Builder;
 import jay.antgame.data.FoodSource;
 import jay.antgame.data.Nest;
 import jay.antgame.data.Position;
@@ -67,10 +68,13 @@ public class GameView extends SurfaceView
 
     private World gameWorld;
     private MenuManager menuManager;
+    private TouchHandling touchHandling;
+
     private Paint paintNest = new Paint();
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
     private Paint paintAnt = new Paint();
+    private Paint paintBuilder = new Paint();
     private Paint paintGrass = new Paint();
 
     private HashMap<Class, Paint> paints = new HashMap<>();
@@ -88,12 +92,12 @@ public class GameView extends SurfaceView
     private int tempTextTime = 0;
     private final int TEMPTEXTTIMESHOWN = 200;
 
-    public GameView(Context context, World gameWorld, MenuManager menuManager,Typeface t) {
+    public GameView(Context context, World gameWorld, MenuManager menuManager, TouchHandling touchHandling, Typeface t) {
         super(context);
 
         this.gameWorld = gameWorld;
         this.menuManager = menuManager;
-
+        this.touchHandling = touchHandling;
 
         // get metrics
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -122,15 +126,21 @@ public class GameView extends SurfaceView
         paintAnt.setColor(Color.BLACK);
         paintAnt.setStyle(Paint.Style.FILL);
 
+        paintBuilder.setAntiAlias(true);
+        paintBuilder.setColor(Color.BLUE);
+        paintBuilder.setStyle(Paint.Style.FILL);
+
         paintGrass.setColor(Color.rgb(188,245,169));
 
         paints.put(Worker.class, paintAnt);
         paints.put(Nest.class, paintNest);
         paints.put(FoodSource.class, paintFoodSource);
+        paints.put(Builder.class, paintBuilder);
 
         sizes.put(Worker.class, ANT_SIZE);
         sizes.put(Nest.class, NEST_SIZE);
         sizes.put(FoodSource.class, FOOD_SOURCE_SIZE);
+        sizes.put(Builder.class, ANT_SIZE);
 
         text.setTypeface(t);
 
@@ -177,7 +187,7 @@ public class GameView extends SurfaceView
         text.setTextSize(50);
         canvas.drawText("Food: "+gameWorld.getFood(), screenWidth-200, 100, text);
 
-        WorldObject selectedObject = gameWorld.getSelectedObject();
+        WorldObject selectedObject = touchHandling.getSelectedObject();
         if(selectedObject!=null){
             canvas.drawText(selectedObject.getSelectedText(), 100, 100, text);
         }
@@ -199,9 +209,11 @@ public class GameView extends SurfaceView
                     text.setTextSize(textSizeShopListItem);
                     canvas.drawText(parts[0]+" ("+menu.getCosts()[ids.get(i)]+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
                             menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
-                    text.setTextSize(textSizeShopItemDiscription);
-                    canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
-                            menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
+                    if(parts.length>1) {
+                        text.setTextSize(textSizeShopItemDiscription);
+                        canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10 + xShifting,
+                                menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
+                    }
                 }
             }
         }

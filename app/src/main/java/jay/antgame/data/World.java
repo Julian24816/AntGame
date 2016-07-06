@@ -19,8 +19,6 @@ public class World {
     private int width = 2000;
     private int height = 1000;
 
-    private WorldObject selectedObject = null;
-
     public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
         this.ants = ants;
         foodSources = sources;
@@ -65,7 +63,10 @@ public class World {
         nest.addFoodAmount(f);
     }
 
-    public void addAnt(Ant ant){ ants.add(ant); }
+    public void addAnt(Ant ant){
+        ants.add(ant);
+        objects.add(ant);
+    }
 
     public int getWidth(){ return width; }
 
@@ -73,13 +74,13 @@ public class World {
 
     public List<WorldObject> getWorldObjects(){ return objects; }
 
-    public WorldObject getSelectedObject(){ return selectedObject; }
-
-    public void setSelectedObject(WorldObject object){ selectedObject = object; }
-
-    public void addWorker(Position p){ ants.add(new Worker(p)); }
+    public void addWorker(Position p){ addAnt(new Worker(p)); }
 
     public void addWorker(){ addWorker(nest.getPosition().clone()); }
+
+    public void addBuilder(){
+        addAnt( new Builder(new Position(nest.getPosition().getX()+30,nest.getPosition().getY())));
+    }
 
     public void setDimension(int width, int height){
         this.width = width;

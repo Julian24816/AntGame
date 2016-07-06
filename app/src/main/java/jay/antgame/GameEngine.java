@@ -40,13 +40,6 @@ public class GameEngine implements Runnable {
     private TouchHandling touchHandling;
     private World world;
 
-    private final int expWorkerCostsImcrecment = 2;
-    private final int expWorkerLevelCostIncrecment = 3;
-
-    private int workerUpgradeCost = 10;
-    private int workerCost = 1;
-
-
     public GameEngine(GameView gameView, World world, TouchHandling touchHandling) {
         this.world = world;
         this.gameView = gameView;

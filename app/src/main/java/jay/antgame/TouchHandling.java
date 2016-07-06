@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import jay.antgame.data.Position;
 import jay.antgame.data.World;
+import jay.antgame.data.WorldClicks;
 import jay.antgame.data.WorldObject;
 import jay.antgame.data.menus.Menu;
 import jay.antgame.data.menus.MenuManager;
@@ -20,6 +21,8 @@ public class TouchHandling {
     private MenuManager menuManager;
     private World world;
 
+    private WorldObject selectedObject = null;
+
     //Zeit zu der der Finger das display berührt
     private long timeDown = 0;
     //zeit ab der ein druck als langer druck gezählt wird in nano sekunden
@@ -29,11 +32,12 @@ public class TouchHandling {
     private float downX,downY;
     private float oldX,oldY;
 
-    public TouchHandling(GameView gameView, World world, MenuManager menuManager){
-        this.gameView = gameView;
+    public TouchHandling(World world, MenuManager menuManager){
         this.world = world;
         this.menuManager = menuManager;
     }
+
+    public void setGameView(GameView gameView){ this.gameView = gameView; }
 
     /**
      *
@@ -84,8 +88,12 @@ public class TouchHandling {
     public void checkLongTouch(){
         if(timeDown!=0){
             long deltaTime = System.nanoTime()-timeDown;
-            //long Touch
+
             if(deltaTime>longTouch){
+
+                if(selectedObject!=null&&selectedObject instanceof WorldClicks)
+                    ((WorldClicks) selectedObject).longClick(gameView.getWorldPosition(downX,downY));
+
                 timeDown = 0;
             }
         }
@@ -94,31 +102,43 @@ public class TouchHandling {
 
     public void click(Position p){
 
-        boolean found = false;
-        for(WorldObject object: world.getWorldObjects()){
+        if( !(selectedObject instanceof WorldClicks) ) {
 
-            if(Methods.samePosition(p,object.getPosition(),touchAccuracy)){
-                found = true;
-                object.click(p);
-                world.setSelectedObject(object);
+            selectedObject = null;
+            for (WorldObject object : world.getWorldObjects()) {
 
-                break;
+                if (Methods.samePosition(p, object.getPosition(), touchAccuracy)) {
+                    selectedObject = object;
+                }
+
             }
 
-        }
-        for(Menu menu: menuManager.getAllMenus()){
+            if (selectedObject!=null) {
+                menuManager.allMenusInvisible();
+                selectedObject.click(p);
+            }else{
+                for (Menu menu : menuManager.getAllMenus()) {
 
-            if(menu.showList()&&menu.insideBounds(p,gameView)){
-                found = true;
-                menu.click(p);
-                world.setSelectedObject(menu);
+                    if (menu.showList() && menu.insideBounds(p, gameView)) {
+                        menu.click(p);
+                        selectedObject = menu;
+                    }
+
+                }
+            }
+            if(selectedObject==null) {
+                menuManager.allMenusInvisible();
             }
 
-        }
-        if(!found) {
-            world.setSelectedObject(null);
-            menuManager.allMenusInvisible();
+        }else{
+            if(Methods.samePosition(p, selectedObject.getPosition(), touchAccuracy)){
+                selectedObject = null;
+            }else{
+                selectedObject.click(p);
+            }
         }
     }
+
+    public WorldObject getSelectedObject(){ return selectedObject; }
 
 }

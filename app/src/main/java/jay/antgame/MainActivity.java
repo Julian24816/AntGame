@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(gameEngine!=null)
+        if(touchHandling!=null)
             touchHandling.touchEvent(event);
 
         return false;
@@ -156,11 +156,14 @@ public class MainActivity extends AppCompatActivity
         //create Menu Manager
         menuManager = new MenuManager(world);
 
+        //create TouchHandling
+        touchHandling = new TouchHandling(world, menuManager);
+
         //set Menu in Nest
         world.getNest().setMenu(menuManager.getNestMenu());
 
         // create new GameView and show it
-        gameView = new GameView(this, world, menuManager ,Typeface.createFromAsset(getAssets() ,"airmole.ttf"));
+        gameView = new GameView(this, world, menuManager , touchHandling ,Typeface.createFromAsset(getAssets() ,"airmole.ttf"));
         container.addView(gameView,
                 new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -169,11 +172,14 @@ public class MainActivity extends AppCompatActivity
         //Set GameView in MenuManager
         menuManager.setGameView(gameView);
 
-        //create TouchHandling
-        touchHandling = new TouchHandling(gameView, world, menuManager);
+        //Set GameView in TouchHandling
+        touchHandling.setGameView(gameView);
 
         // create GameEngine and start it
         gameEngine = new GameEngine(gameView, world, touchHandling);
+
+        Getter.set(gameView,gameEngine,touchHandling,menuManager);
+
         gameEngine.start();
     }
 

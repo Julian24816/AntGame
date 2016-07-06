@@ -374,7 +374,7 @@ public class GameStorage extends SQLiteOpenHelper {
     public World getNewWorld() {
 
         Nest nest = new Nest(new Position(0,0));
-        nest.addFoodAmount(20);
+        nest.addFoodAmount(50);
 
         List<Ant> ants = new LinkedList<>();
         for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));

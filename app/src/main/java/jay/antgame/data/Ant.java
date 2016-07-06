@@ -36,4 +36,7 @@ public abstract class Ant implements WorldObject {
 
     public abstract void tick(World world);
 
+    public boolean hasTarget() {
+        return targetPosition!=null;
+    }
 }

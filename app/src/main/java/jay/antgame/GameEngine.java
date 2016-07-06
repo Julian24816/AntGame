@@ -120,10 +120,10 @@ public class GameEngine implements Runnable {
 
     public String mischen(String[] zutaten, int aktZutat, String ergebnis){
         if(aktZutat<zutaten.length){
-            ergebnis += zutaten[aktZutat];
+            ergebnis += " "+zutaten[aktZutat];
             return mischen(zutaten, aktZutat+1, ergebnis);
         }else{
-            return "Obstsalat";
+            return "Obstsalat =" + ergebnis;
         }
     }
 
@@ -185,8 +185,8 @@ public class GameEngine implements Runnable {
             }
         }
 
-                float x = event.getX();
-                float y = event.getY();
+        float x = event.getX();
+        float y = event.getY();
                 //if(event.getAction()==MotionEvent.ACTION_DOWN)
                 //gameEngine.click(gameView.getWorldPosition(x,y));
 

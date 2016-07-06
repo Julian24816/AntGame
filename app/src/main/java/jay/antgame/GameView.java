@@ -160,6 +160,10 @@ public class GameView extends SurfaceView
         return new Position(x,y);
     }
 
+    public Position getWorldPosition(ScreenPosition pos) {
+        return getWorldPosition(pos.getX(), pos.getY());
+    }
+
 
     private void doDraw(Canvas canvas) {
 

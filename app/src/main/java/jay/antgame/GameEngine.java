@@ -51,7 +51,8 @@ public class GameEngine implements Runnable {
         this.world = world;
         this.gameView = gameView;
         this.touchHandling = touchHandling;
-        System.out.println(mischen(new String[]{"Apfel","Birne","Banane","Erdbeere","Rosinen","Pflaume"},0,""));
+        Log.d("antgame",mischen(
+                new String[]{"Apfel","Birne","Banane","Erdbeere","Rosinen","Pflaume"},0,""));
     }
 
     public void start() {

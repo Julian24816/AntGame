@@ -8,6 +8,9 @@ import jay.antgame.GameEngine;
 
 public class Worker extends Ant {
 
+    private static float movementSpeed = 3;
+    private static int extCostIncrecment = 2;
+
     private int antFood = 0;
 
     private final double randomRotation = 0.5;
@@ -32,8 +35,8 @@ public class Worker extends Ant {
                 if(x<0)
                     targetAngle += Math.PI;
                 //System.out.println( "Target Angle = "+x+"/"+y+ "  tanh "+targetAngle );
-                pos.addX(world.getWorkerMovmentSpeed()* Math.cos(targetAngle));
-                pos.addY(world.getWorkerMovmentSpeed() * Math.sin(targetAngle));
+                pos.addX(movementSpeed* Math.cos(targetAngle));
+                pos.addY(movementSpeed * Math.sin(targetAngle));
             }else{
                 //Wenn Ziel erreicht kein Ziel mehr
                 if(targetPosition==world.getNest().getPosition()){
@@ -50,8 +53,8 @@ public class Worker extends Ant {
                 if(pos.getX()<-world.getWidth()/2+worldEndPuffer||pos.getX()>world.getWidth()/2-worldEndPuffer
                         ||pos.getY()<-world.getHeight()/2+worldEndPuffer||pos.getY()>world.getHeight()/2-worldEndPuffer)
                     angle += abdrehWinkel;
-                pos.addX(world.getWorkerMovmentSpeed() * Math.cos(angle));
-                pos.addY(world.getWorkerMovmentSpeed() * Math.sin(angle));
+                pos.addX(movementSpeed * Math.cos(angle));
+                pos.addY(movementSpeed * Math.sin(angle));
                 //System.out.println(pos.getX() + " , "+pos.getY()+ "     "+world.getWidth()+" "+world.getHeight());
             }else{
                 targetPosition = world.getNest().getPosition();
@@ -94,4 +97,7 @@ public class Worker extends Ant {
     public String getSlectedText() {
         return "Worker foodCarring: "+antFood;
     }
+
+    public static int getExtCostIncrecment(){ return extCostIncrecment; }
+
 }

@@ -1,6 +1,7 @@
 package jay.antgame.data.menus;
 
 import jay.antgame.GameView;
+import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 
 /**
@@ -34,7 +35,7 @@ public class MenuManager {
             }
             switch (id) {
                 case 0:
-                    outText = world.buyWorker();
+                    outText = buyWorker(line,id);
             }
             gameView.writeTempText(outText);
         }
@@ -54,5 +55,17 @@ public class MenuManager {
     }
 
     public Menu getNestMenu(){ return nestMenu; }
+
+    public String buyWorker(int listID, int arrayID){
+        if(world.getFood()>=nestMenu.getAllCosts()[arrayID]){
+            world.addAnt();
+            world.addFood(-nestMenu.getAllCosts()[arrayID]);
+            nestMenu.getAllCosts()[arrayID] *= Worker.getExtCostIncrecment();
+            nestMenu.getCosts().set(listID, nestMenu.getCosts().get(listID)*Worker.getExtCostIncrecment() );
+            return "One Worker spawned";
+        }else{
+            return "You need "+(nestMenu.getAllCosts()[arrayID]-world.getFood())+" more Food";
+        }
+    }
 
 }

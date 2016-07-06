@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import jay.antgame.data.World;
+import jay.antgame.data.menus.MenuManager;
 
 /**
  * Created by Julian on 09.06.2016.
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity
     private GameEngine gameEngine;
     private GameStorage gameStorage;
     private TouchHandling touchHandling;
+    private MenuManager menuManager;
 
     /**
      * initializes the App
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onTouchEvent(MotionEvent event) {
 
         if(gameEngine!=null)
-            gameEngine.touchEvent(event);
+            touchHandling.touchEvent(event);
 
         return false;
     }
@@ -151,15 +153,24 @@ public class MainActivity extends AppCompatActivity
         // load World from database
         World world = gameStorage.getNewWorld();
 
+        //create Menu Manager
+        menuManager = new MenuManager(world);
+
+        //set Menu in Nest
+        world.getNest().setMenu(menuManager.getNestMenu());
+
         // create new GameView and show it
-        gameView = new GameView(this, world, Typeface.createFromAsset(getAssets(), "airmole.ttf"));
+        gameView = new GameView(this, world, menuManager ,Typeface.createFromAsset(getAssets() ,"airmole.ttf"));
         container.addView(gameView,
                 new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
+        //Set GameView in MenuManager
+        menuManager.setGameView(gameView);
+
         //create TouchHandling
-        touchHandling = new TouchHandling(gameView);
+        touchHandling = new TouchHandling(gameView, world, menuManager);
 
         // create GameEngine and start it
         gameEngine = new GameEngine(gameView, world, touchHandling);

@@ -71,6 +71,7 @@ public class GameView extends SurfaceView
     };
 
     private World gameWorld;
+    private MenuManager menuManager;
     private Paint paintNest = new Paint();
     private Paint paintFoodSource = new Paint();
     private Paint paintScentTrail = new Paint();
@@ -92,10 +93,11 @@ public class GameView extends SurfaceView
     private int tempTextTime = 0;
     private final int TEMPTEXTTIMESHOWN = 200;
 
-    public GameView(Context context, World gameWorld, Typeface t) {
+    public GameView(Context context, World gameWorld, MenuManager menuManager,Typeface t) {
         super(context);
 
         this.gameWorld = gameWorld;
+        this.menuManager = menuManager;
 
 
         // get metrics
@@ -186,21 +188,21 @@ public class GameView extends SurfaceView
         }
 
         //Draw all menus
-        for(Menu menu: gameWorld.getMenuManager().getAllMenus()){
+        for(Menu menu: menuManager.getAllMenus()){
             if(menu.showList()){
 
                 text.setTextSize(textSizeShopListItem);
                 int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
-                float shopBackgroundHeigth = menu.getList().size() * itemHeight;
+                float shopBackgroundHeigth = menu.getIdsOfShownOffersList().size() * itemHeight;
                 ScreenPosition menuPosition = getScreenCoordinates(menu.getPosition());
                 canvas.drawRect(menuPosition.getX() - shopBackgroundWidth / 2 +xShifting, menuPosition.getY() - shopBackgroundHeigth / 2 + yShifting,
                         menuPosition.getX() + shopBackgroundWidth / 2 +xShifting, menuPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4 + yShifting, paintMenu);
 
-                List<String> lines = menu.getList();
-                for (int i = 0; i < lines.size(); i++) {
-                    String[] parts = lines.get(i).split(":");
+                List<Integer> ids = menu.getIdsOfShownOffersList();
+                for (int i = 0; i < ids.size(); i++) {
+                    String[] parts = menu.getList()[ids.get(i)].split(":");
                     text.setTextSize(textSizeShopListItem);
-                    canvas.drawText(parts[0]+" ("+menu.getCosts().get(i)+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
+                    canvas.drawText(parts[0]+" ("+menu.getCosts()[ids.get(i)]+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
                             menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
                     text.setTextSize(textSizeShopItemDiscription);
                     canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
@@ -246,7 +248,7 @@ public class GameView extends SurfaceView
     public static int getMenuItemHeight(){ return textSizeShopListItem + textSizeShopItemDiscription; }
 
     public static float getMenuHeight(Menu menu){
-        return menu.getList().size() * (textSizeShopListItem + textSizeShopItemDiscription);
+        return menu.getIdsOfShownOffersList().size() * (textSizeShopListItem + textSizeShopItemDiscription);
     }
 
     public static float getMenuWidth(){ return shopBackgroundWidth; }

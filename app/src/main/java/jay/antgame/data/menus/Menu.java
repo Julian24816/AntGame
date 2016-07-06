@@ -20,8 +20,7 @@ public class Menu implements WorldObject{
     private boolean show = false;
     private String[] list;
     private int[] costs;
-    private ArrayList<String> shownList = new ArrayList<String>();
-    private ArrayList<Integer> shownCosts = new ArrayList<>();
+    private ArrayList<Integer> idsOfShownOffersList = new ArrayList<>();
 
     public Menu(String name, MenuManager manager,String[] list, int[] costs){
         this.list = list;
@@ -29,9 +28,7 @@ public class Menu implements WorldObject{
         this.name = name;
         this.manager = manager;
         for(int i=0;i<list.length;i++){
-            shownList.add(list[i]);
-            if(i<costs.length)
-                shownCosts.add(costs[i]);
+            idsOfShownOffersList.add(i);
         }
     }
 
@@ -66,15 +63,13 @@ public class Menu implements WorldObject{
         //shownCosts.set(listID, newCosts );
     }
 
-    public List<Integer> getCosts(){ return shownCosts; }
+    public int[] getCosts(){ return costs; }
 
-    public int[] getAllCosts(){ return costs; }
+    public String[] getList(){ return list; }
 
-    public List<String> getList(){ return shownList; }
+    public List<Integer> getIdsOfShownOffersList(){ return idsOfShownOffersList; }
 
     public boolean showList(){ return show; }
-
-    public String[] getFullList(){ return list; }
 
     public void setShow(boolean show){ this.show = show; }
 

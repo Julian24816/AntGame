@@ -1,5 +1,8 @@
 package jay.antgame.data;
 
+import jay.antgame.data.menus.Menu;
+import jay.antgame.data.menus.MenuManager;
+
 /**
  * Created by Julian on 24.06.2016.
  */
@@ -7,15 +10,15 @@ public class Nest implements WorldObject {
 
     private Position pos;
     private int food;
-    private World world;
+    private Menu menu;
 
     public Nest(Position startPos) {
         pos = startPos;
         food = 0;
     }
 
-    public void setWorld(World world){
-        this.world = world;
+    public void setMenu(Menu menu){
+        this.menu = menu;
     }
 
     @Override
@@ -31,8 +34,8 @@ public class Nest implements WorldObject {
 
     @Override
     public void click(Position p) {
-        world.getMenuManager().getNestMenu().setShow(true);
-        world.getMenuManager().getNestMenu().setPosition(pos);
+        menu.setShow(true);
+        menu.setPosition(pos);
     }
 
     @Override

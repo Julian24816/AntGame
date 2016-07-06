@@ -6,6 +6,7 @@ import jay.antgame.data.Position;
 import jay.antgame.data.World;
 import jay.antgame.data.WorldObject;
 import jay.antgame.data.menus.Menu;
+import jay.antgame.data.menus.MenuManager;
 
 /**
  * Created by Yannick.Pfeiffer on 06.07.2016.
@@ -16,6 +17,7 @@ import jay.antgame.data.menus.Menu;
 public class TouchHandling {
 
     private GameView gameView;
+    private MenuManager menuManager;
     private World world;
 
     //Zeit zu der der Finger das display berührt
@@ -27,8 +29,10 @@ public class TouchHandling {
     private float downX,downY;
     private float oldX,oldY;
 
-    public TouchHandling(GameView gameView){
+    public TouchHandling(GameView gameView, World world, MenuManager menuManager){
         this.gameView = gameView;
+        this.world = world;
+        this.menuManager = menuManager;
     }
 
     /**
@@ -102,7 +106,7 @@ public class TouchHandling {
             }
 
         }
-        for(Menu menu: world.getMenuManager().getAllMenus()){
+        for(Menu menu: menuManager.getAllMenus()){
 
             if(menu.showList()&&menu.insideBounds(p,gameView)){
                 found = true;
@@ -113,7 +117,7 @@ public class TouchHandling {
         }
         if(!found) {
             world.setSelectedObject(null);
-            world.getMenuManager().allMenusInvisible();
+            menuManager.allMenusInvisible();
         }
     }
 

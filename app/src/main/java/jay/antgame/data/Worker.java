@@ -1,6 +1,7 @@
 package jay.antgame.data;
 
 import jay.antgame.GameEngine;
+import jay.antgame.Methods;
 
 /**
  * Created by Yannick.Pfeiffer on 29.06.2016.
@@ -10,6 +11,11 @@ public class Worker extends Ant {
 
     private static float movementSpeed = 3;
     private static int extCostIncrecment = 2;
+
+    private static int workerLevel = 1;
+    private static int workerFoodCapacity = 1;
+
+    private static double workerNearFoodVariable = 20;
 
     private int antFood = 0;
 
@@ -66,9 +72,9 @@ public class Worker extends Ant {
     private boolean checkIfOnFS(World world){
         boolean onFS = false;
         for(FoodSource foodSource: world.getFoodSources()){
-            if(checkIfOn(foodSource.getPosition(),world.getWorkerNearFoodVariable())){
+            if(checkIfOn(foodSource.getPosition(),Worker.getWorkerNearFoodVariable())){
                 onFS = true;
-                antFood = foodSource.removeFood(world.getWorkerFoodCapacity());
+                antFood = foodSource.removeFood(Worker.getWorkerFoodCapacity());
             }
         }
         return onFS;
@@ -76,7 +82,7 @@ public class Worker extends Ant {
 
     private boolean checkIfOn(Position targetPosition, double nearTargetVariable){
 
-        return GameEngine.samePosition(pos,targetPosition,nearTargetVariable);
+        return Methods.samePosition(pos,targetPosition,nearTargetVariable);
 
     }
 
@@ -99,5 +105,11 @@ public class Worker extends Ant {
     }
 
     public static int getExtCostIncrecment(){ return extCostIncrecment; }
+
+    public static int getWorkerLevel(){ return workerLevel; }
+
+    public static int getWorkerFoodCapacity(){ return workerFoodCapacity; }
+
+    public static double getWorkerNearFoodVariable(){ return workerNearFoodVariable; }
 
 }

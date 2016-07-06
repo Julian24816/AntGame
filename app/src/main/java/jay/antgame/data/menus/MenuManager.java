@@ -1,6 +1,7 @@
 package jay.antgame.data.menus;
 
 import jay.antgame.GameView;
+import jay.antgame.data.Position;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
 
@@ -22,27 +23,42 @@ public class MenuManager {
         allMenus[0] = nestMenu;
     }
 
-    public void itemClicked(Menu menu, int line){
-        String outText = "";
-        String order = menu.getList().get(line);
-        if(menu==nestMenu){
-            int id = 0;
-            for(int i=0;i<menu.getFullList().length;i++){
-                if(menu.getFullList()[i].equals(order)){
-                    id = i;
-                    break;
-                }
-            }
-            switch (id) {
-                case 0:
-                    outText = buyWorker(line,id);
-            }
-            gameView.writeTempText(outText);
-        }
+    public void setGameView(GameView gameView){
+        this.gameView = gameView;
     }
 
-    public void setGameView(GameView gv){
-        this.gameView = gv;
+    public void itemClicked(Menu menu, Position p){
+
+    }
+
+    public void itemClicked(Menu menu, int line){
+
+        String outText = "";
+        int id = menu.getIdsOfShownOffersList().get(line);
+
+        if(menu==nestMenu){
+            switch (id){
+                case 0:
+                    outText = buyWorker(id);
+            }
+        }
+
+        gameView.writeTempText(outText);
+    }
+
+    public Menu getNestMenu(){ return nestMenu; }
+
+    public String buyWorker(int id){
+
+        if(world.getNest().getFood()>=nestMenu.getCosts()[id]){
+            world.addAnt();
+            world.getNest().addFoodAmount(-nestMenu.getCosts()[id]);
+            nestMenu.getCosts()[id] *= Worker.getExtCostIncrecment();
+            return "One Worker spawned";
+        }else{
+            return "You need "+(nestMenu.getCosts()[id]-world.getFood())+" more Food";
+        }
+
     }
 
     public Menu[] getAllMenus(){
@@ -52,20 +68,6 @@ public class MenuManager {
     public void allMenusInvisible(){
         for(Menu menu: allMenus)
             menu.setShow(false);
-    }
-
-    public Menu getNestMenu(){ return nestMenu; }
-
-    public String buyWorker(int listID, int arrayID){
-        if(world.getFood()>=nestMenu.getAllCosts()[arrayID]){
-            world.addAnt();
-            world.addFood(-nestMenu.getAllCosts()[arrayID]);
-            nestMenu.getAllCosts()[arrayID] *= Worker.getExtCostIncrecment();
-            nestMenu.getCosts().set(listID, nestMenu.getCosts().get(listID)*Worker.getExtCostIncrecment() );
-            return "One Worker spawned";
-        }else{
-            return "You need "+(nestMenu.getAllCosts()[arrayID]-world.getFood())+" more Food";
-        }
     }
 
 }

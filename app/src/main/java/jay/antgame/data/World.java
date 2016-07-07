@@ -20,13 +20,13 @@ public class World {
     private int width = 2000;
     private int height = 1000;
 
-    private int SCENT_LIFETIME = 1000;
+    private int SCENT_LIFETIME_PER_10_PX = 100;
 
     public World(List<Ant> ants, List<FoodSource> sources, Nest nest) {
         this(ants, sources, new LinkedList<ScentTrail>(), nest);
 
         for(FoodSource foodSource: foodSources){
-            ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME);
+            ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME_PER_10_PX);
             scentTrails.add(scentTrail);
             foodSource.setScentTrail(scentTrail);
 
@@ -103,7 +103,7 @@ public class World {
     }
 
     public void addFoodSource(FoodSource foodSource){
-        ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME);
+        ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME_PER_10_PX);
         scentTrails.add(scentTrail);
         foodSource.setScentTrail(scentTrail);
     }

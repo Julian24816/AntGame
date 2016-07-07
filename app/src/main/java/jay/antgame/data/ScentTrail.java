@@ -27,6 +27,8 @@ public class ScentTrail implements WorldObject {
         a = (target.getY()-pos.getY()) / (target.getX()-pos.getX());
         b = pos.getY() - a*pos.getX();
 
+        lifeTime = (int)(  Math.sqrt( Math.pow(target.getX()-pos.getX(),2) + Math.pow(target.getY()-pos.getY(),2)) /10 * lifeTime  );
+
         endPoint = pos;
     }
 

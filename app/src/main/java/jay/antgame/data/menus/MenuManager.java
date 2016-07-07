@@ -47,10 +47,6 @@ public class MenuManager {
         int id = menu.getIdsOfShownOffersList().get(line);
 
         if(menu==nestMenu){
-            /*switch (id){
-                case 0:
-                    outText = buyWorker(id);
-            }*/
             buyAnt(id);
         }
 
@@ -66,8 +62,10 @@ public class MenuManager {
             switch (id){
                 case 0:
                     buyWorker(id);
+                    break;
                 case 1:
                     buyBuilder(id);
+                    break;
             }
 
             return "One Worker spawned";
@@ -83,6 +81,7 @@ public class MenuManager {
     }
 
     public void buyBuilder(int id){
+        System.out.println(id);
         nestMenu.getIdsOfShownOffersList().remove(id);
         world.addBuilder();
     }

@@ -186,9 +186,6 @@ public class GameView extends SurfaceView
                     paints.get(object.getClass()));
         }
 
-        text.setTextSize(50);
-        canvas.drawText("Food: "+gameWorld.getFood(), screenWidth-200, 100, text);
-
         for(ScentTrail scentTrail: gameWorld.getScentTrails()){
             if(scentTrail.isVisible()) {
                 Position pos1 = getScreenCoordinates(scentTrail.getEndPoint1());
@@ -196,6 +193,9 @@ public class GameView extends SurfaceView
                 canvas.drawLine(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), paintScentTrail);
             }
         }
+
+        text.setTextSize(50);
+        canvas.drawText("Food: "+gameWorld.getFood(), screenWidth-200, 100, text);
 
         WorldObject selectedObject = touchHandling.getSelectedObject();
         if(selectedObject!=null){
@@ -295,21 +295,18 @@ public class GameView extends SurfaceView
         // draw Nest
         Position nestPos = getScreenCoordinates(gameWorld.getNest().getPosition());
         canvas.drawCircle(xShifting+nestPos.getX(), yShifting+nestPos.getY(), NEST_SIZE*density* ZOOMFACTOR /2, paintNest);
-
         // draw FoodSources
         for (FoodSource source: gameWorld.getFoodSources()) {
             Position sourcePos = getScreenCoordinates(source.getPosition());
             canvas.drawCircle(xShifting+sourcePos.getX(), yShifting+sourcePos.getY(), FOOD_SOURCE_SIZE*density* ZOOMFACTOR /2,
                     paintFoodSource);
         }
-
         // draw ScentTrails
         for (ScentTrail trail: gameWorld.getScentTrails()) {
             Position sourcePos = getScreenCoordinates(trail.getPosition());
             canvas.drawCircle(xShifting+sourcePos.getX(), yShifting+sourcePos.getY(), SCENT_TRAIL_SIZE*density* ZOOMFACTOR /2,
                     paintScentTrail);
         }
-
         // draw FoodSources
         for (Ant ant: gameWorld.getAnts()) {
             Position sourcePos = getScreenCoordinates(ant.getPosition());

@@ -23,9 +23,7 @@ public class World {
     private int SCENT_LIFETIME = 1000;
 
     public World(List<Ant> ants, List<FoodSource> sources, Nest nest) {
-        this.ants = ants;
-        foodSources = sources;
-        scentTrails = new LinkedList<>();
+        this(ants, sources, new LinkedList<ScentTrail>(), nest);
 
         for(FoodSource foodSource: foodSources){
             ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME);
@@ -33,8 +31,14 @@ public class World {
             foodSource.setScentTrail(scentTrail);
 
         }
+    }
 
+    public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> scentTrails,Nest nest) {
+        this.ants = ants;
+        foodSources = sources;
+        this.scentTrails = scentTrails;
         this.nest = nest;
+
         objects.addAll(sources);
         objects.add(nest);
         objects.addAll(ants);

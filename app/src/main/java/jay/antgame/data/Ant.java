@@ -8,12 +8,13 @@ public abstract class Ant implements WorldObject {
     private double movementSpeed = 2;
 
     protected Position pos;
-    protected double angle = 0;
+    protected double angle;
 
     protected Position targetPosition;
 
     public Ant(Position pos) {
         this.pos = pos;
+        this.angle = Math.random()*360;
     }
 
     @Override

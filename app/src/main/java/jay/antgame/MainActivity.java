@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    /**
+     * activates/deactivates the buttons of the start layout depending on the presence of
+     * savedWorlds
+     *
+     * deactivating means disabling the onClickListener and changing the Color
+     */
     private void updateAccessibility() {
         TextView start_latest = (TextView) findViewById(R.id.start_latest);
         if (start_latest != null) {
@@ -155,10 +162,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    /**
+     *
+     * @param event the MotionEvent
+     * @return true upon succes
+     */
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
 
         if(touchHandling!=null)
-            touchHandling.touchEvent(event);
+            return touchHandling.touchEvent(event);
 
         return false;
     }

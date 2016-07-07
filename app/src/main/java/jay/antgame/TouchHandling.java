@@ -43,7 +43,7 @@ public class TouchHandling {
      *
      * @param event MotionEvent which gets
      */
-    public void touchEvent(MotionEvent event){
+    public boolean touchEvent(MotionEvent event){
 
         if(event.getAction()==MotionEvent.ACTION_UP) {
             long deltaTime = System.nanoTime()-timeDown;
@@ -79,6 +79,7 @@ public class TouchHandling {
         //if(event.getAction()==MotionEvent.ACTION_DOWN)
         //gameEngine.click(gameView.getWorldPosition(x,y));
 
+        return true; // = success
     }
 
     /**

@@ -440,10 +440,19 @@ public class GameStorage extends SQLiteOpenHelper {
         return new World(antList, sources, new LinkedList<ScentTrail>(), nest);
     }
 
+
+    /**
+     *
+     * @return true if database contains saved Worlds
+     */
     public boolean savedWorldsPresent() {
         return availableSaveIds.size() > 0;
     }
 
+
+    /**
+     * deletes all saved Worlds
+     */
     public void deleteAllWorlds() {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NEST, null, null);
@@ -454,10 +463,16 @@ public class GameStorage extends SQLiteOpenHelper {
         availableSaveIds = new ArrayList<>();
     }
 
+
+    /**
+     * retrieves the latest World
+     *
+     * @return the World with the highest saveId or null
+     */
     public World getLatestWorld() {
         if (availableSaveIds.size() > 0)
             return getWorld(availableSaveIds.get(availableSaveIds.size()-1));
         else
-            return getNewWorld();
+            return null;
     }
 }

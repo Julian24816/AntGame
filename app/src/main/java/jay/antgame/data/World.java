@@ -1,6 +1,7 @@
 package jay.antgame.data;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import jay.antgame.data.menus.MenuManager;
@@ -19,10 +20,20 @@ public class World {
     private int width = 2000;
     private int height = 1000;
 
-    public World(List<Ant> ants, List<FoodSource> sources, List<ScentTrail> trails, Nest nest) {
+    private int SCENT_LIFETIME = 1000;
+
+    public World(List<Ant> ants, List<FoodSource> sources, Nest nest) {
         this.ants = ants;
         foodSources = sources;
-        scentTrails = trails;
+        scentTrails = new LinkedList<>();
+
+        for(FoodSource foodSource: foodSources){
+            ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME);
+            scentTrails.add(scentTrail);
+            foodSource.setScentTrail(scentTrail);
+
+        }
+
         this.nest = nest;
         objects.addAll(sources);
         objects.add(nest);
@@ -85,6 +96,12 @@ public class World {
     public void setDimension(int width, int height){
         this.width = width;
         this.height = height;
+    }
+
+    public void addFoodSource(FoodSource foodSource){
+        ScentTrail scentTrail = new ScentTrail(nest.getPosition(),foodSource.getPosition(),SCENT_LIFETIME);
+        scentTrails.add(scentTrail);
+        foodSource.setScentTrail(scentTrail);
     }
 
 }

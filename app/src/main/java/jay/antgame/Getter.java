@@ -1,5 +1,6 @@
 package jay.antgame;
 
+import jay.antgame.data.World;
 import jay.antgame.data.menus.Menu;
 import jay.antgame.data.menus.MenuManager;
 
@@ -12,12 +13,14 @@ public class Getter {
     private static GameEngine gameEngine;
     private static TouchHandling touchHandling;
     private static MenuManager menuManager;
+    private static World world;
 
-    public static void set(GameView gv, GameEngine ge, TouchHandling th, MenuManager mm){
+    public static void set(GameView gv, GameEngine ge, TouchHandling th, MenuManager mm, World w){
         gameView = gv;
         gameEngine = ge;
         touchHandling = th;
         menuManager = mm;
+        world = w;
     }
 
     public static GameEngine getGameEngine() {
@@ -35,4 +38,6 @@ public class Getter {
     public static TouchHandling getTouchHandling() {
         return touchHandling;
     }
+
+    public static World getWorld(){ return world; }
 }

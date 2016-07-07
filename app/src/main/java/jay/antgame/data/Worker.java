@@ -17,9 +17,14 @@ public class Worker extends Ant {
 
     private static double workerNearFoodVariable = 20;
 
+    private static float nearScent = 10;
+
     private int antFood = 0;
 
+    private FoodSource foundFoodSource;
+
     private final double randomRotation = 0.5;
+
     //Bereich an Ende der Map, ab welchem die Ameisen wieder umdrehen
     private final int worldEndPuffer = 30;
     private final int abdrehWinkel = 2;
@@ -49,21 +54,28 @@ public class Worker extends Ant {
                     world.addFood(antFood);
                     antFood = 0;
                 }
+                if(foundFoodSource!=null)
+                    foundFoodSource.getScentTrail().resetEndPoint();
+                foundFoodSource = null;
                 targetPosition = null;
             }
 
         }else{
-            //Wenn kein Ziel Winkel zufällig ändern und weiterlaufen
-            if(!checkIfOnFS(world)) {
-                angle += (0.5 - Math.random()) * randomRotation;
-                if(pos.getX()<-world.getWidth()/2+worldEndPuffer||pos.getX()>world.getWidth()/2-worldEndPuffer
-                        ||pos.getY()<-world.getHeight()/2+worldEndPuffer||pos.getY()>world.getHeight()/2-worldEndPuffer)
-                    angle += abdrehWinkel;
-                pos.addX(movementSpeed * Math.cos(angle));
-                pos.addY(movementSpeed * Math.sin(angle));
-                //System.out.println(pos.getX() + " , "+pos.getY()+ "     "+world.getWidth()+" "+world.getHeight());
-            }else{
+            //Sucht FutterQuelle in der Nähe, wenn gefunden ziel wird Nest gesetzt
+            if(checkIfOnFS(world)) {
                 targetPosition = world.getNest().getPosition();
+            }else if(searchForScentTrail(world)){
+                //Sucht nach Scent Trail in der Nähe
+
+            }else{
+                //Wenn kein Ziel Winkel zufällig ändern und weiterlaufen
+            angle += (0.5 - Math.random()) * randomRotation;
+            if(pos.getX()<-world.getWidth()/2+worldEndPuffer||pos.getX()>world.getWidth()/2-worldEndPuffer
+                    ||pos.getY()<-world.getHeight()/2+worldEndPuffer||pos.getY()>world.getHeight()/2-worldEndPuffer)
+                angle += abdrehWinkel;
+            pos.addX(movementSpeed * Math.cos(angle));
+            pos.addY(movementSpeed * Math.sin(angle));
+            //System.out.println(pos.getX() + " , "+pos.getY()+ "     "+world.getWidth()+" "+world.getHeight());
             }
         }
 
@@ -74,10 +86,24 @@ public class Worker extends Ant {
         for(FoodSource foodSource: world.getFoodSources()){
             if(checkIfOn(foodSource.getPosition(),Worker.getWorkerNearFoodVariable())){
                 onFS = true;
+                foundFoodSource = foodSource;
+                foodSource.getScentTrail().setEndPoint(pos);
+                foodSource.getScentTrail().setVisible();
                 antFood = foodSource.removeFood(Worker.getWorkerFoodCapacity());
             }
         }
         return onFS;
+    }
+
+    private boolean searchForScentTrail(World world){
+        boolean found =false;
+        for(ScentTrail scentTrail: world.getScentTrails()){
+            if(scentTrail.isVisible() && scentTrail.near(pos, nearScent)) {
+                found = true;
+                targetPosition = scentTrail.getTarget();
+            }
+        }
+        return  found;
     }
 
     private boolean checkIfOn(Position targetPosition, double nearTargetVariable){

@@ -7,8 +7,9 @@ public class FoodSource implements WorldObject {
 
     private int sourceFood, maxFood;
     private Position pos;
+    private ScentTrail scentTrail;
 
-    public FoodSource (Position pos, int startFood) {
+    public FoodSource (Position pos ,int startFood) {
         this.pos = pos;
         maxFood = sourceFood = startFood;
     }
@@ -51,5 +52,13 @@ public class FoodSource implements WorldObject {
             sourceFood = 0;
             return  sourceFood;
         }
+    }
+
+    public void setScentTrail(ScentTrail scentTrail){
+        this.scentTrail = scentTrail;
+    }
+
+    public ScentTrail getScentTrail(){
+        return scentTrail;
     }
 }

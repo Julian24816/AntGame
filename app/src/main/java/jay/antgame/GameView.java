@@ -19,6 +19,7 @@ import jay.antgame.data.Builder;
 import jay.antgame.data.FoodSource;
 import jay.antgame.data.Nest;
 import jay.antgame.data.Position;
+import jay.antgame.data.ScentTrail;
 import jay.antgame.data.ScreenPosition;
 import jay.antgame.data.Worker;
 import jay.antgame.data.World;
@@ -130,7 +131,8 @@ public class GameView extends SurfaceView
         paintBuilder.setColor(Color.BLUE);
         paintBuilder.setStyle(Paint.Style.FILL);
 
-        paintGrass.setColor(Color.rgb(188,245,169));
+        //188,245,169
+        paintGrass.setColor(Color.rgb(188,0,169));
 
         paints.put(Worker.class, paintAnt);
         paints.put(Nest.class, paintNest);
@@ -153,8 +155,8 @@ public class GameView extends SurfaceView
 
     private ScreenPosition getScreenCoordinates(Position pos) {
 
-        float x = width/2 + pos.getX()*density* ZOOMFACTOR;
-        float y = height/2 - pos.getY()*density* ZOOMFACTOR;
+        float x = width/2 + pos.getX()*density* ZOOMFACTOR + xShifting;
+        float y = height/2 - pos.getY()*density* ZOOMFACTOR + yShifting;
 
         return new ScreenPosition(x,y);
     }
@@ -180,12 +182,20 @@ public class GameView extends SurfaceView
 
         for(WorldObject object: gameWorld.getWorldObjects()){
             Position pos = getScreenCoordinates(object.getPosition());
-            canvas.drawCircle(xShifting+pos.getX(), yShifting+pos.getY(), sizes.get(object.getClass())*density* ZOOMFACTOR /2,
+            canvas.drawCircle(pos.getX(), pos.getY(), sizes.get(object.getClass())*density* ZOOMFACTOR /2,
                     paints.get(object.getClass()));
         }
 
         text.setTextSize(50);
         canvas.drawText("Food: "+gameWorld.getFood(), screenWidth-200, 100, text);
+
+        for(ScentTrail scentTrail: gameWorld.getScentTrails()){
+            if(scentTrail.isVisible()) {
+                Position pos1 = getScreenCoordinates(scentTrail.getEndPoint1());
+                Position pos2 = getScreenCoordinates(scentTrail.getEndPoint2());
+                canvas.drawLine(pos1.getX(), pos1.getY(), pos2.getX(), pos2.getY(), paintScentTrail);
+            }
+        }
 
         WorldObject selectedObject = touchHandling.getSelectedObject();
         if(selectedObject!=null){

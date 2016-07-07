@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity
         // create GameEngine and start it
         gameEngine = new GameEngine(gameView, world, touchHandling);
 
-        Getter.set(gameView,gameEngine,touchHandling,menuManager);
+        Getter.set(gameView,gameEngine,touchHandling,menuManager,world);
 
         gameEngine.start();
     }

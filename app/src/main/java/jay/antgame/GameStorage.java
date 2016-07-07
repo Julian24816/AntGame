@@ -383,9 +383,24 @@ public class GameStorage extends SQLiteOpenHelper {
      * @return the new World Object
      */
     public World getNewWorld() {
+        return getNewWorld(20, 5, 50);
+    }
+
+
+    /**
+     * creates a new World with specified object counts
+     *
+     * @param ants the number of ants in the World
+     * @param foodSources the number of foodSources in the World
+     * @param nestFood the amount of to start with
+     * @return the new World object
+     */
+    private World getNewWorld(int ants, int foodSources, int nestFood) {
+
+        //TODO use parameters to determine the worlds attributes
 
         Nest nest = new Nest(new Position(0,0));
-        nest.addFoodAmount(50);
+        nest.addFoodAmount(nestFood);
 
         List<Ant> antList = new LinkedList<>();
         for (int i = 0; i < 10; i++)

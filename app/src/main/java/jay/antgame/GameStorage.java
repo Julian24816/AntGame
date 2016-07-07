@@ -154,6 +154,8 @@ public class GameStorage extends SQLiteOpenHelper {
         if (res.moveToNext())
             saveId = res.getInt(0);
 //        if (saveId == 0) throw new RuntimeException("no previous saved world present");
+        res.close();
+        db.close();
         saveWorld(world, saveId);
     }
 

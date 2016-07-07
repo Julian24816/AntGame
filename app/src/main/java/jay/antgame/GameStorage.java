@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jay.antgame.data.Ant;
+import jay.antgame.data.Builder;
 import jay.antgame.data.FoodSource;
 import jay.antgame.data.Nest;
 import jay.antgame.data.Position;
@@ -26,7 +27,7 @@ import jay.antgame.data.World;
 public class GameStorage extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "antgame";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // reused constants for database tables
     private static final String POS_X = "posX";
@@ -38,9 +39,12 @@ public class GameStorage extends SQLiteOpenHelper {
 
     // constants for table ANTS
     private static final String TABLE_ANTS = "ants";
+    private static final String ANT_TYPE = "type";
+    private static final String ANT_TYPE_WORKER = "worker";
+    private static final String ANT_TYPE_BUILDER = "builder";
     private static final String CREATE_TABLE_ANTS
             = "create table " + TABLE_ANTS + " (" + POS_X + " real, " + POS_Y + " real, "
-            + TARGET_POS_X + " real, " + TARGET_POS_Y + " real, "
+            + TARGET_POS_X + " real, " + TARGET_POS_Y + " real, " + ANT_TYPE + " text, "
             + FOOD_AMOUNT + " integer, " + SAVE_ID + " integer)";
 
 
@@ -114,7 +118,7 @@ public class GameStorage extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        throw new RuntimeException("reinstall App to fix database bug");
     }
 
 
@@ -201,11 +205,18 @@ public class GameStorage extends SQLiteOpenHelper {
 
         values.put(POS_X, ant.getPosition().getX());
         values.put(POS_Y, ant.getPosition().getY());
-        values.put(FOOD_AMOUNT, ((Worker)ant).getFood()); //todo different ant types
         values.put(SAVE_ID, saveId);
         if (ant.hasTarget()) {
             values.put(TARGET_POS_X, ant.getTargetPosition().getX());
             values.put(TARGET_POS_Y, ant.getTargetPosition().getY());
+        }
+
+        if (ant instanceof Worker) {
+            values.put(FOOD_AMOUNT, ((Worker)ant).getFood());
+            values.put(ANT_TYPE, ANT_TYPE_WORKER);
+        } else if (ant instanceof Builder) {
+            values.put(FOOD_AMOUNT, 0);
+            values.put(ANT_TYPE, ANT_TYPE_BUILDER);
         }
 
         db.insert(TABLE_ANTS, null, values);
@@ -376,9 +387,10 @@ public class GameStorage extends SQLiteOpenHelper {
         Nest nest = new Nest(new Position(0,0));
         nest.addFoodAmount(50);
 
-        List<Ant> ants = new LinkedList<>();
-        for (int i = 0; i < 10; i++) ants.add(new Worker(new Position(i*10 - 40,0)));
-        ants.add(new Worker(new Position(100,-100)));
+        List<Ant> antList = new LinkedList<>();
+        for (int i = 0; i < 10; i++)
+            antList.add(new Worker(nest.getPosition()));
+        antList.add(new Worker(new Position(100,-100)));
 
         List<FoodSource> sources = new LinkedList<>();
         sources.add(new FoodSource(new Position(200,100), 50));
@@ -386,6 +398,6 @@ public class GameStorage extends SQLiteOpenHelper {
         sources.add(new FoodSource(new Position(-200,-100), 50));
         sources.add(new FoodSource(new Position(100,-100), 50));
 
-        return new World(ants, sources, new LinkedList<ScentTrail>(), nest);
+        return new World(antList, sources, new LinkedList<ScentTrail>(), nest);
     }
 }

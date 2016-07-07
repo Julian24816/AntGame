@@ -1,5 +1,6 @@
 package jay.antgame;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements View.OnClickListener {
 
     private ViewGroup container, start_container;
+    private TextView delete;
     private GameView gameView;
     private GameEngine gameEngine;
     private GameStorage gameStorage;
@@ -63,7 +65,10 @@ public class MainActivity extends AppCompatActivity
         TextView start_latest = (TextView) findViewById(R.id.start_latest);
         if (start_latest != null) {
             start_latest.setTypeface(t);
-            start_latest.setOnClickListener(this);
+        }
+        delete = (TextView) findViewById(R.id.delete);
+        if (delete != null) {
+            delete.setTypeface(t);
         }
 
         start_container = (ViewGroup) findViewById(R.id.start_container);
@@ -74,6 +79,31 @@ public class MainActivity extends AppCompatActivity
 
         // initialize the GameStorage
         gameStorage = new GameStorage(this);
+        updateAccessibility();
+
+    }
+
+    private void updateAccessibility() {
+        TextView start_latest = (TextView) findViewById(R.id.start_latest);
+        if (start_latest != null) {
+            if (gameStorage.savedWorldsPresent()) {
+                start_latest.setOnClickListener(this);
+//                start_latest.setTextColor(Color.GRAY);
+            } else {
+                start_latest.setOnClickListener(null);
+                start_latest.setTextColor(Color.LTGRAY);
+            }
+        }
+
+        if (delete != null) {
+            if (gameStorage.savedWorldsPresent()) {
+                delete.setOnClickListener(this);
+//                delete.setTextColor(Color.GRAY);
+            } else {
+                delete.setOnClickListener(null);
+                delete.setTextColor(Color.LTGRAY);
+            }
+        }
     }
 
 
@@ -105,10 +135,23 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (v.getId()==R.id.start_latest) {
-            Toast.makeText(this, "not implemented", Toast.LENGTH_SHORT).show();
-            Log.e("antgame", "not implemented");
+            Animation a = AnimationUtils.loadAnimation(this, R.anim.abc_fade_out);
+            a.setAnimationListener(new Animation.AnimationListener() {
+                @Override public void onAnimationStart(Animation animation) {}
+                @Override public void onAnimationRepeat(Animation animation) {}
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    //... start the Game on the end of the Animation
+                    startGame(gameStorage.getLatestWorld());
+                }
+            });
+            start_container.startAnimation(a);
         }
 
+        if (v.getId()==R.id.delete) {
+            gameStorage.deleteAllWorlds();
+            updateAccessibility();
+        }
 
     }
 
@@ -133,7 +176,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if (gameEngine!=null) gameEngine.stop();
+        if (gameEngine!=null) {
+            gameEngine.stop();
+        }
+        gameStorage.saveWorld(gameEngine.getWorld());
     }
 
 
@@ -159,8 +205,9 @@ public class MainActivity extends AppCompatActivity
      */
     private void startGame(World world) {
 
-        // remove title View
+        // remove unnecessary Views
         start_container.setVisibility(View.GONE);
+        delete.setVisibility(View.GONE);
 
         //create Menu Manager
         menuManager = new MenuManager(world);

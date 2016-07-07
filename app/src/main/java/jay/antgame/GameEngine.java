@@ -65,6 +65,12 @@ public class GameEngine implements Runnable {
         executorService.shutdown();
     }
 
+
+    public World getWorld() {
+        return world;
+    }
+
+
     @Override
     public void run() {
 

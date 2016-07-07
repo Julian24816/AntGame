@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +28,9 @@ import jay.antgame.data.World;
 public class GameStorage extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "antgame";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
+
+    private ArrayList<Integer> availableSaveIds;
 
     // reused constants for database tables
     private static final String POS_X = "posX";
@@ -42,10 +45,13 @@ public class GameStorage extends SQLiteOpenHelper {
     private static final String ANT_TYPE = "type";
     private static final String ANT_TYPE_WORKER = "worker";
     private static final String ANT_TYPE_BUILDER = "builder";
+    private static final String ANT_HAS_TARGET = "hasTarget";
+    private static final int ANT_HAS_TARGET_TRUE = 1;
+    private static final int ANT_HAS_TARGET_FALSE = 0;
     private static final String CREATE_TABLE_ANTS
             = "create table " + TABLE_ANTS + " (" + POS_X + " real, " + POS_Y + " real, "
             + TARGET_POS_X + " real, " + TARGET_POS_Y + " real, " + ANT_TYPE + " text, "
-            + FOOD_AMOUNT + " integer, " + SAVE_ID + " integer)";
+            + FOOD_AMOUNT + " integer, " + ANT_HAS_TARGET + " integer, " + SAVE_ID + " integer)";
 
 
     // constants for table NEST
@@ -58,7 +64,7 @@ public class GameStorage extends SQLiteOpenHelper {
     // constants for table FOOD_SOURCES
     private static final String TABLE_FOOD_SOURCES = "foodSources";
     private static final String FOOD_SOURCE_MAX_FOOD_AMOUNT = "maxFoodAmount";
-    private static final String CREATE_TABLE_FOODSOURCES
+    private static final String CREATE_TABLE_FOOD_SOURCES
             = "create table " + TABLE_FOOD_SOURCES + " (" + POS_X + " real, " + POS_Y + " real, "
             + FOOD_AMOUNT + " integer, " + FOOD_SOURCE_MAX_FOOD_AMOUNT + " integer, "
             + SAVE_ID + " integer)";
@@ -72,14 +78,14 @@ public class GameStorage extends SQLiteOpenHelper {
             + SCENT_TRAIL_REMAINING_LIFE_TIME + " integer, " + SAVE_ID + " integer)";
 
 
-
     /**
-     * calls the SuperConstructor
+     * calls the SuperConstructor and retrieves all available worldIds
      *
      * @param context the GameStorage's context
      */
     public GameStorage(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        availableSaveIds = getAvailableSaveIds();
     }
 
 
@@ -96,7 +102,7 @@ public class GameStorage extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL(CREATE_TABLE_ANTS);
-            db.execSQL(CREATE_TABLE_FOODSOURCES);
+            db.execSQL(CREATE_TABLE_FOOD_SOURCES);
             db.execSQL(CREATE_TABLE_NEST);
             db.execSQL(CREATE_TABLE_SCENTTRAILS);
         } catch (Exception e) {
@@ -127,8 +133,8 @@ public class GameStorage extends SQLiteOpenHelper {
      *
      * @return Array of saveIds
      */
-    public Integer[] getAvailableWorlds() {
-        List<Integer> list = new LinkedList<>();
+    public ArrayList<Integer> getAvailableSaveIds() {
+        ArrayList<Integer> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery("select " + SAVE_ID + " from " + TABLE_NEST,null);
         while (res.moveToNext()) {
@@ -136,7 +142,7 @@ public class GameStorage extends SQLiteOpenHelper {
         }
         res.close();
         db.close();
-        return (Integer[]) list.toArray();
+        return list;
     }
 
 
@@ -147,16 +153,18 @@ public class GameStorage extends SQLiteOpenHelper {
      * @param world the World, that will be saved
      */
     public void saveWorld(World world) {
+        Log.d("antgame", "saving world...");
         // get next saveId
         int saveId = 0;
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery("select max("+ SAVE_ID + ") from " + TABLE_NEST, null);
         if (res.moveToNext())
-            saveId = res.getInt(0);
+            saveId = res.getInt(0) + 1;
 //        if (saveId == 0) throw new RuntimeException("no previous saved world present");
         res.close();
         db.close();
         saveWorld(world, saveId);
+        Log.d("antgame", "saving world... done");
     }
 
 
@@ -209,8 +217,11 @@ public class GameStorage extends SQLiteOpenHelper {
         values.put(POS_Y, ant.getPosition().getY());
         values.put(SAVE_ID, saveId);
         if (ant.hasTarget()) {
+            values.put(ANT_HAS_TARGET, ANT_HAS_TARGET_TRUE);
             values.put(TARGET_POS_X, ant.getTargetPosition().getX());
             values.put(TARGET_POS_Y, ant.getTargetPosition().getY());
+        } else {
+            values.put(ANT_HAS_TARGET, ANT_HAS_TARGET_FALSE);
         }
 
         if (ant instanceof Worker) {
@@ -277,7 +288,6 @@ public class GameStorage extends SQLiteOpenHelper {
      * @return a new World object corresponding to the saveId
      */
     public World getWorld(int saveId) {
-        //TODO assert that a save with saveId exists
         Nest nest = getNest(saveId);
         List<Ant> ants = getAnts(saveId);
         List<FoodSource> sources = getFoodSources(saveId);
@@ -344,12 +354,24 @@ public class GameStorage extends SQLiteOpenHelper {
         List<Ant> ants = new LinkedList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery("select " + POS_X + ", " + POS_Y + ", " + TARGET_POS_X + ", "
-                + TARGET_POS_Y + ", " + FOOD_AMOUNT + " from " + TABLE_ANTS
+                + TARGET_POS_Y + ", " + FOOD_AMOUNT + ", " + ANT_TYPE + ", " + ANT_HAS_TARGET
+                + " from " + TABLE_ANTS
                 + " where " + SAVE_ID + " = ?",new String[]{String.valueOf(saveId)});
         while (res.moveToNext()) {
-            Worker ant = new Worker(new Position(res.getFloat(0), res.getFloat(1)));
-            ant.setPosition(new Position(res.getFloat(2), res.getFloat(3)));
-            ant.setFood(res.getInt(4));
+            Ant ant;
+
+            if (res.getString(5).equals(ANT_TYPE_WORKER)) {
+                ant = new Worker(new Position(res.getFloat(0), res.getFloat(1)));
+                ((Worker)ant).setFood(res.getInt(4));
+
+            } else if (res.getString(5).equals(ANT_TYPE_BUILDER)) {
+                ant = new Builder(new Position(res.getFloat(0), res.getFloat(1)));
+
+            } else throw new RuntimeException("unknown ant type when loading world "+saveId);
+
+            if (res.getInt(6) == ANT_HAS_TARGET_TRUE)
+                ant.setTargetPosition(new Position(res.getFloat(2), res.getFloat(3)));
+
             ants.add(ant);
         }
         res.close();
@@ -416,5 +438,26 @@ public class GameStorage extends SQLiteOpenHelper {
         sources.add(new FoodSource(new Position(100,-100), 50));
 
         return new World(antList, sources, new LinkedList<ScentTrail>(), nest);
+    }
+
+    public boolean savedWorldsPresent() {
+        return availableSaveIds.size() > 0;
+    }
+
+    public void deleteAllWorlds() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NEST, null, null);
+        db.delete(TABLE_ANTS, null, null);
+        db.delete(TABLE_SCENT_TRAILS, null, null);
+        db.delete(TABLE_FOOD_SOURCES, null, null);
+        db.close();
+        availableSaveIds = new ArrayList<>();
+    }
+
+    public World getLatestWorld() {
+        if (availableSaveIds.size() > 0)
+            return getWorld(availableSaveIds.get(availableSaveIds.size()-1));
+        else
+            return getNewWorld();
     }
 }

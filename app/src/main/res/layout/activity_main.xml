@@ -6,6 +6,15 @@
              android:id="@+id/container"
              tools:context="jay.antgame.MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/deleteAllWorlds"
+        android:textSize="32dp"
+        android:id="@+id/delete"
+        android:layout_gravity="left|top"
+        android:layout_margin="5dp"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"

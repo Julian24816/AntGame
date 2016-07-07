@@ -19,6 +19,8 @@ import jay.antgame.data.menus.Menu;
 
 /**
  * Created by Julian on 09.06.2016.
+ *
+ * @author Yannick
  */
 public class GameEngine implements Runnable {
 

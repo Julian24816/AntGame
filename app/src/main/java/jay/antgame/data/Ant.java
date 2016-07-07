@@ -2,6 +2,8 @@ package jay.antgame.data;
 
 /**
  * Created by Julian on 24.06.2016.
+ *
+ * @author Yannick, Tristan, Julian
  */
 public abstract class Ant implements WorldObject {
 

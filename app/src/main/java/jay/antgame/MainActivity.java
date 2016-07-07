@@ -3,6 +3,7 @@ package jay.antgame;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jay.antgame.data.World;
 import jay.antgame.data.menus.MenuManager;
@@ -22,7 +24,7 @@ import jay.antgame.data.menus.MenuManager;
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener {
 
-    private ViewGroup container;
+    private ViewGroup container, start_container;
     private GameView gameView;
     private GameEngine gameEngine;
     private GameStorage gameStorage;
@@ -46,22 +48,25 @@ public class MainActivity extends AppCompatActivity
 
         // load Typeface from assets -> assets/airmole.ttf
         Typeface t = Typeface.createFromAsset(getAssets(), "airmole.ttf");
-        // fetch view with id title -> defined in activity_main.xml
+
+        // apply this typeface to the Views
+        // and make this instance the OnClickListener -> this.OnClick(View v)
         TextView title = (TextView) findViewById(R.id.title);
         if (title != null) {
             title.setTypeface(t);
-            title.setOnClickListener(this);
+        }
+        TextView start_new = (TextView) findViewById(R.id.start_new);
+        if (start_new != null) {
+            start_new.setTypeface(t);
+            start_new.setOnClickListener(this);
+        }
+        TextView start_latest = (TextView) findViewById(R.id.start_latest);
+        if (start_latest != null) {
+            start_latest.setTypeface(t);
+            start_latest.setOnClickListener(this);
         }
 
-        //Hab schon ne andere Lösung dafür gefunden, will es nur nicht rauslöschen
-        TextView foodView = (TextView) findViewById(R.id.foodView);
-        if (foodView != null) {
-            foodView.setTypeface(t);
-            foodView.setText("0 Food");
-            foodView.setVisibility(View.GONE);
-        }
-
-        // and make this instance the OnClickListener -> this.OnClick(View v)
+        start_container = (ViewGroup) findViewById(R.id.start_container);
 
         // save the View with id container to a field
         // -> will get filled with the GameView in startGame()
@@ -83,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
 
         // if the clicked View was the title view
-        if (v.getId()==R.id.title) {
+        if (v.getId()==R.id.start_new) {
 
             // show an Animation and ...
             Animation a = AnimationUtils.loadAnimation(this, R.anim.abc_fade_out);
@@ -93,11 +98,17 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     //... start the Game on the end of the Animation
-                    startGame();
+                    startGame(gameStorage.getNewWorld());
                 }
             });
-            v.startAnimation(a);
+            start_container.startAnimation(a);
         }
+
+        if (v.getId()==R.id.start_latest) {
+            Toast.makeText(this, "not implemented", Toast.LENGTH_SHORT).show();
+            Log.e("antgame", "not implemented");
+        }
+
 
     }
 
@@ -142,16 +153,14 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
-     * starts the Game
+     * starts the Game with the given World
+     *
+     * @param world the World to start with
      */
-    private void startGame() {
+    private void startGame(World world) {
 
         // remove title View
-        findViewById(R.id.title).setVisibility(View.GONE);
-
-
-        // load World from database
-        World world = gameStorage.getNewWorld();
+        start_container.setVisibility(View.GONE);
 
         //create Menu Manager
         menuManager = new MenuManager(world);

@@ -20,7 +20,7 @@ public class World {
     private int width = 2000;
     private int height = 1000;
 
-    private int SCENT_LIFETIME_PER_10_PX = 100;
+    private int SCENT_LIFETIME_PER_10_PX = 55;
 
     public World(List<Ant> ants, List<FoodSource> sources, Nest nest) {
         this(ants, sources, new LinkedList<ScentTrail>(), nest);

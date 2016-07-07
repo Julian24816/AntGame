@@ -292,7 +292,9 @@ public class GameStorage extends SQLiteOpenHelper {
         List<Ant> ants = getAnts(saveId);
         List<FoodSource> sources = getFoodSources(saveId);
         List<ScentTrail> trails = getScentTrails(saveId);
-        return new World(ants, sources, trails, nest);
+        //TODO neue trails mit db kompatibel machen
+        //return new World(ants, sources, trails, nest);
+        return new World(ants, sources, nest);
     }
 
 

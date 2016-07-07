@@ -6,13 +6,48 @@
              android:id="@+id/container"
              tools:context="jay.antgame.MainActivity">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/title"
-        android:textSize="48sp"
-        android:text="@string/app_name"/>
+        android:gravity="center_horizontal"
+        android:id="@+id/start_container"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/title"
+            android:textSize="48sp"
+            android:text="@string/app_name"/>
+
+        <FrameLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:id="@+id/start_new"
+                android:textSize="32sp"
+                android:text="@string/start_new"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:id="@+id/start_latest"
+                android:textSize="32sp"
+                android:text="@string/start_latest"
+                />
+
+        </FrameLayout>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

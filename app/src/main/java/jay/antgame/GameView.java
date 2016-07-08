@@ -131,7 +131,7 @@ public class GameView extends SurfaceView
         paintBuilder.setColor(Color.BLUE);
         paintBuilder.setStyle(Paint.Style.FILL);
 
-        paintGrass.setColor(Color.rgb(188,245,169));
+        paintGrass.setColor(Color.rgb(150,255,150));
 
         paints.put(Worker.class, paintAnt);
         paints.put(Nest.class, paintNest);
@@ -176,7 +176,7 @@ public class GameView extends SurfaceView
     private void doDraw(Canvas canvas) {
 
         // draw Background
-        canvas.drawColor(Color.rgb(188,235,169));
+        canvas.drawColor(Color.rgb(200,255,200));
         canvas.drawRect(left+xShifting,top+yShifting,right+xShifting,bottom+yShifting,paintGrass);
 
         for(WorldObject object: gameWorld.getWorldObjects()){

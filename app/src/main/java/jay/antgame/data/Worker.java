@@ -57,6 +57,9 @@ public class Worker extends Ant {
                 if(foundFoodSource!=null)
                     foundFoodSource.getScentTrail().resetEndPoint();
                 foundFoodSource = null;
+                angle = Math.tanh( (targetPosition.getY()-pos.getY())/(targetPosition.getX()-pos
+                        .getX()) );
+                if (targetPosition.getX()-pos.getX() < 0) angle += + Math.PI;
                 targetPosition = null;
             }
 
@@ -84,7 +87,8 @@ public class Worker extends Ant {
     private boolean checkIfOnFS(World world){
         boolean onFS = false;
         for(FoodSource foodSource: world.getFoodSources()){
-            if(checkIfOn(foodSource.getPosition(),Worker.getWorkerNearFoodVariable())){
+            if(!foodSource.isEmpty()&&checkIfOn(foodSource.getPosition(),Worker
+                    .getWorkerNearFoodVariable())){
                 onFS = true;
                 foundFoodSource = foodSource;
                 foodSource.getScentTrail().setEndPoint(pos);

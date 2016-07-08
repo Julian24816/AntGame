@@ -61,4 +61,8 @@ public class FoodSource implements WorldObject {
     public ScentTrail getScentTrail(){
         return scentTrail;
     }
+
+    public boolean isEmpty(){
+        return sourceFood==0;
+    }
 }

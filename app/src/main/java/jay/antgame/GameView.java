@@ -209,19 +209,19 @@ public class GameView extends SurfaceView
                 int itemHeight = textSizeShopListItem + textSizeShopItemDiscription;
                 float shopBackgroundHeigth = menu.getIdsOfShownOffersList().size() * itemHeight;
                 ScreenPosition menuPosition = getScreenCoordinates(menu.getPosition());
-                canvas.drawRect(menuPosition.getX() - shopBackgroundWidth / 2 +xShifting, menuPosition.getY() - shopBackgroundHeigth / 2 + yShifting,
-                        menuPosition.getX() + shopBackgroundWidth / 2 +xShifting, menuPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4 + yShifting, paintMenu);
+                canvas.drawRect(menuPosition.getX() - shopBackgroundWidth / 2, menuPosition.getY() - shopBackgroundHeigth / 2,
+                        menuPosition.getX() + shopBackgroundWidth / 2, menuPosition.getY() + shopBackgroundHeigth / 2 + textSizeShopListItem / 4, paintMenu);
 
                 List<Integer> ids = menu.getIdsOfShownOffersList();
                 for (int i = 0; i < ids.size(); i++) {
                     String[] parts = menu.getList()[ids.get(i)].split(":");
                     text.setTextSize(textSizeShopListItem);
-                    canvas.drawText(parts[0]+" ("+menu.getCosts()[ids.get(i)]+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10 +xShifting,
-                            menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + yShifting, text);
+                    canvas.drawText(parts[0]+" ("+menu.getCosts()[ids.get(i)]+")", menuPosition.getX() - shopBackgroundWidth / 2 + 10,
+                            menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight, text);
                     if(parts.length>1) {
                         text.setTextSize(textSizeShopItemDiscription);
-                        canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10 + xShifting,
-                                menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem + yShifting, text);
+                        canvas.drawText(parts[1], menuPosition.getX() - shopBackgroundWidth / 2 + 10,
+                                menuPosition.getY() - shopBackgroundHeigth / 2 + text.getTextSize() + i * itemHeight + textSizeShopListItem, text);
                     }
                 }
             }

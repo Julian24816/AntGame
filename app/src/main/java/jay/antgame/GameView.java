@@ -131,8 +131,7 @@ public class GameView extends SurfaceView
         paintBuilder.setColor(Color.BLUE);
         paintBuilder.setStyle(Paint.Style.FILL);
 
-        //188,245,169
-        paintGrass.setColor(Color.rgb(188,0,169));
+        paintGrass.setColor(Color.rgb(188,245,169));
 
         paints.put(Worker.class, paintAnt);
         paints.put(Nest.class, paintNest);

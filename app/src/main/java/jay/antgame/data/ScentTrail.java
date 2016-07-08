@@ -87,6 +87,13 @@ public class ScentTrail implements WorldObject {
         currentLifetime = lifetime;
     }
 
+
+    /**
+     * Überprüft ob ein Punkt p in der Nähe der strecke liegt
+     * @param p Position von Object
+     * @param howNear faktor ab welchem das objekt als nah gilt
+     * @return
+     */
     public boolean near(Position p, float howNear){
         float Sx = (p.getY()+ (p.getX()/a) - b ) / (a + 1/a);
 

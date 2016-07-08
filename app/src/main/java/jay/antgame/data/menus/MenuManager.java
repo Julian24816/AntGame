@@ -41,6 +41,12 @@ public class MenuManager {
 
     }
 
+    /**
+     * Wird von einem Menü aufgeufen, wenn dieses einen klick überliefert bekomnmt
+     * Macht das was in den offers Strings steht
+     * @param menu Menü welches den klick regestriert hat
+     * @param line Zeile in der der klick regestriert hat
+     */
     public void itemClicked(Menu menu, int line){
 
         String outText = "";
@@ -53,6 +59,11 @@ public class MenuManager {
         gameView.writeTempText(outText);
     }
 
+    /**
+     * Kauft eine ameise abhänig von der id (=position in String[] list in Menü nestMenu)
+     * @param id
+     * @return
+     */
     public String buyAnt(int id){
 
         if(world.getNest().getFood()>=nestMenu.getCosts()[id]){

@@ -9,20 +9,27 @@ import jay.antgame.Methods;
 
 public class Worker extends Ant {
 
+    //bewegungsgeschwindigkeit pro tick
     private static float movementSpeed = 3;
+    //faktor der mit preis multipliziert wird, nachdem ein Worker gekauft wurde
     private static int extCostIncrecment = 2;
 
+    //Level der ameise
     private static int workerLevel = 1;
     private static int workerFoodCapacity = 1;
 
+    //ab wie nah die ameise eine futterquelle bemerkt
     private static double workerNearFoodVariable = 20;
 
+    //Ab wo die Ameise den ScentTrail bemerkt
     private static float nearScent = 10;
 
+    //Essen welches die Ameise mit sich trägt
     private int antFood = 0;
 
     private FoodSource foundFoodSource;
 
+    //Zufällige max Drehung (in Bogenmaß) welche ein Worker pro tick macht
     private final double randomRotation = 0.5;
 
     //Bereich an Ende der Map, ab welchem die Ameisen wieder umdrehen
@@ -54,9 +61,12 @@ public class Worker extends Ant {
                     world.addFood(antFood);
                     antFood = 0;
                 }
+                //wenn vorher eine foodSource gefunden wurde und die Ameise zurück zum bau gelaufen ist
+                //wird in ScentTrail die EndPosition des trails von ameise zurück auf nest gesetzt
                 if(foundFoodSource!=null)
                     foundFoodSource.getScentTrail().resetEndPoint();
                 foundFoodSource = null;
+                //drehung wird so angepasst, dass die ameise gerade weiterläuft
                 angle = Math.tanh( (targetPosition.getY()-pos.getY())/(targetPosition.getX()-pos
                         .getX()) );
                 if (targetPosition.getX()-pos.getX() < 0) angle += + Math.PI;
@@ -69,7 +79,7 @@ public class Worker extends Ant {
                 targetPosition = world.getNest().getPosition();
             }else if(searchForScentTrail(world)){
                 //Sucht nach Scent Trail in der Nähe
-
+                //Wenn einer gefunden wird wird die targetPosition die targetPosition des scentTrails
             }else{
                 //Wenn kein Ziel Winkel zufällig ändern und weiterlaufen
             angle += (0.5 - Math.random()) * randomRotation;
@@ -84,6 +94,11 @@ public class Worker extends Ant {
 
     }
 
+    /**
+     * Überprüft für alle Futterquellen ob der Worker nahe einer ist
+     * @param world
+     * @return boolean nahe einer Futterquelle
+     */
     private boolean checkIfOnFS(World world){
         boolean onFS = false;
         for(FoodSource foodSource: world.getFoodSources()){
@@ -99,6 +114,11 @@ public class Worker extends Ant {
         return onFS;
     }
 
+    /**
+     * Überprüft für alle ScentTrails ob der Worker nahe einer ist
+     * @param world
+     * @return boolean nahe eines ScentTrails
+     */
     private boolean searchForScentTrail(World world){
         boolean found =false;
         for(ScentTrail scentTrail: world.getScentTrails()){
